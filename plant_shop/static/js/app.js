@@ -38,7 +38,7 @@ window.Cart = {
 		let e = 0;
 		for (const r in t) e += t[r].quantity;
 		const a = document.getElementById("cart-link");
-		a && (a.innerText = "🛒 Panier" + (e > 0 ? " (" + e + ")" : ""));
+		a && (a.innerText = "Mon Panier" + (e > 0 ? " (" + e + ")" : ""));
 	},
 	renderOrderReview: function (
 		t = "order-review-container",
@@ -124,22 +124,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Dropdown logic
-  const toggle = document.querySelector(".dropdown-toggle");
-  const menu = document.querySelector(".dropdown-menu");
-
-  toggle.addEventListener("click", function (e) {
-    e.preventDefault();
-    menu.classList.toggle("show");
-  });
-
-  document.addEventListener("click", function (e) {
-    if (!e.target.closest(".dropdown")) {
-      menu.classList.remove("show");
-    }
-  });
-
-  // Init cart
   Cart.renderOrderReview();
   Cart.updateNavbarCount();
   Cart.render();

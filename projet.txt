@@ -811,7 +811,7 @@ if (window.location.search.includes("cleared=1")) {
 	{% for plant in plants %}
 	<div class="card-fun mb-3">
 		<h3><a href="{% url 'plant_show' plant.id %}">{{ plant.name }}</a></h3>
-		<p><strong>Prix :</strong> {{ plant.price }} € — <strong>Stock :</strong> {{ plant.stock }}</p>
+		<p><strong>Prix :</strong> {{ plant.price }} €{% if user.admin %} — <strong>Stock :</strong> {{ plant.stock }}{% endif %}</p>
 		<button class="btn-green w-100"
 			onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">Ajouter au panier</button>
 	</div>
@@ -828,7 +828,7 @@ if (window.location.search.includes("cleared=1")) {
 <h1 class="mb-4">{{ plant.name }}</h1>
 <div class="card-fun mb-4">
   <p><strong>Prix :</strong> {{ plant.price }} €</p>
-  <p><strong>Stock :</strong> {{ plant.stock }}</p>
+  {% if user.admin %}<p><strong>Stock :</strong> {{ plant.stock }}</p>{% endif %}
   <p>{{ plant.description }}</p>
   <button class="btn-green w-100" onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">Ajouter au panier</button>
 </div>

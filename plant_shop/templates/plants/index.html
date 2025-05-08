@@ -1,17 +1,31 @@
 {% extends "layouts/base.html" %}{% block title %}Plantes{% endblock %}
 {% block content %}
 {% if request.user.is_authenticated and request.user.admin %}
-<div class="text-end mb-3" style="margin-top: 2rem;">
-	<a href="{% url 'admin_plants_new' %}" class="btn btn-green">Nouvelle Plante</a>
+<div class="mb-3 mt-4">
+	<a href="{% url 'admin_plants_new' %}" class="btn btn-success">Nouvelle Plante</a>
 </div>
+
 {% endif %}
-<div class="grid" style="margin-top: 2rem;">
+<div class="row mt-4">
 	{% for plant in plants %}
-	<div class="card-fun mb-3">
-		<h3><a href="{% url 'plant_show' plant.id %}">{{ plant.name }}</a></h3>
-		<p><strong>Prix :</strong> {{ plant.price }} €{% if user.admin %} — <strong>Stock :</strong> {{ plant.stock }}{% endif %}</p>
-		<button class="btn-green w-100"
-			onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">Ajouter au panier</button>
+	<div class="col-md-4">
+		<div class="card mb-4 shadow-sm">
+			<div class="card-body">
+				<h5 class="card-title">
+					<a href="{% url 'plant_show' plant.id %}" class="text-decoration-none text-dark">{{ plant.name }}</a>
+				</h5>
+				<p class="card-text">
+					<strong>Prix :</strong> {{ plant.price }} €<br>
+					{% if user.admin %}
+					<strong>Stock :</strong> {{ plant.stock }} unités
+					{% endif %}
+				</p>
+				<button class="btn btn-success w-100"
+					onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">
+					Ajouter au panier
+				</button>
+			</div>
+		</div>
 	</div>
 	{% endfor %}
 </div>

@@ -8,5 +8,5 @@
   <li><strong>Nom complet :</strong> {{ user.name }}</li>
   <li><strong>Admin :</strong> {{ user.admin|yesno:"Oui,Non" }}</li>
 </ul>
-<a href="{% url 'admin_users_edit' user.id %}" class="btn btn-warning mt-3">✏️ Modifier mon profil</a>
+<a href="{% url 'admin_users_edit' user.id %}" class="btn btn-primary mt-3">Modifier mon profil</a>
 {% endblock %}

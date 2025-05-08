@@ -1,31 +1,33 @@
-<nav class="navbar">
-	<div class="navbar-left">
-		<a href="{% url 'root' %}" class="shop-logo">🌿 PlantShop</a>
-	</div>
-	<div class="navbar-right">
-		{% if user.is_authenticated %}
-		<span style="color:white; font-weight:bold; margin-right: 1rem;">
-			{{ user.name|title }}{% if user.admin %} (Administrateur){% endif %}
-		</span>
-		{% endif %}
-		<a id="cart-link" href="{% url 'cart_index' %}">🛒 Panier</a>
-		{% if not user.is_authenticated %}
-		<a href="{% url 'login' %}">🔐 Connexion</a>
-		<a href="{% url 'signup' %}">📝 Inscription</a>
-		{% endif %}
-		{% if user.is_authenticated %}
-		<a href="{% url 'profile' %}">👤 Mon Profil</a>
-		<a href="{% url 'orders_index' %}">📦 Commandes</a>
-		{% if user.admin %}
-		<div class="dropdown">
-			<a href="#" class="dropdown-toggle">🔧 Admin ▼</a>
-			<div class="dropdown-menu">
-				<a href="{% url 'admin_plants' %}">Gestion Plantes</a>
-				<a href="{% url 'admin_users' %}">Gestion Utilisateurs</a>
-			</div>
-		</div>
-		{% endif %}
-		<a href="{% url 'logout' %}">🚪 Déconnexion</a>
-		{% endif %}
-	</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'root' %}">🌿 PlantShop</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item d-flex align-items-center text-white me-3">
+            {{ user.name|title }}{% if user.admin %} (Administrateur){% endif %}
+          </li>
+					<li class="nav-item"><a id="cart-link" class="nav-link" href="{% url 'cart_index' %}">Mon Panier</a></li>
+					<li class="nav-item"><a class="nav-link" href="{% url 'orders_index' %}">Mes Commandes</a></li>
+					<li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Mon Profil</a></li>
+          {% if user.admin %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Admin</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'admin_plants' %}">Gestion Plantes</a></li>
+              <li><a class="dropdown-item" href="{% url 'admin_users' %}">Gestion Utilisateurs</a></li>
+            </ul>
+          </li>
+          {% endif %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Déconnexion</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Inscription</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Connexion</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
 </nav>

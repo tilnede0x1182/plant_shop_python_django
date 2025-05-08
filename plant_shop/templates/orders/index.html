@@ -20,8 +20,10 @@
 {% endif %}
 
 <script>
-if (window.location.search.includes("cleared=1")) {
-  Cart.clear();
-}
-</script>
+	document.addEventListener("DOMContentLoaded", function () {
+		if (window.location.search.includes("cleared=1")) {
+			Cart.clear();
+		}
+	});
+	</script>
 {% endblock %}

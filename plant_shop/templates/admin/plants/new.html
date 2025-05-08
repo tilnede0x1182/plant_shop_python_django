@@ -1,10 +1,10 @@
 {% extends "layouts/base.html" %}
 {% block title %}Nouvelle plante{% endblock %}
 {% block content %}
-<h1>Nouvelle plante</h1>
-<form method="post">{% csrf_token %}
+<h1 class="mb-4">Nouvelle Plante (Admin)</h1>
+<form method="post" class="border p-4 shadow-sm rounded bg-light">{% csrf_token %}
   {{ form.as_p }}
-  <button type="submit" class="btn-green">Créer</button>
+  <button type="submit" class="btn btn-success">Créer</button>
 </form>
-<a href="{% url 'admin_plants' %}">← Retour</a>
+<a href="{% url 'admin_plants' %}" class="btn btn-secondary mt-3">Retour</a>
 {% endblock %}
