@@ -1,99 +1,151 @@
-:root{--elec-blue:#0066ff;--fun-green:#00c851;--fun-orange:#ff6d00;--fun-yellow:#ffdd00}
-.card-fun{position:relative;background:rgba(0,102,255,.05);border:1px solid var(--elec-blue);
-   border-radius:1rem 1rem 0 1rem;padding:1rem}
-.card-fun::after{content:"";position:absolute;right:-10px;top:-10px;
-   border-width:0 0 40px 40px;border-style:solid;border-color:transparent transparent var(--fun-orange) transparent;opacity:.75}
-.btn-green{background:var(--fun-green);color:#fff}
-.btn-orange{background:var(--fun-orange);color:#fff}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-}
+/* ===========================
+   🎨 Variables globales
+   =========================== */
+	 :root {
+		--elec-blue: #0066ff;
+		--fun-green: #00c851;
+		--fun-orange: #ff6d00;
+		--fun-yellow: #ffdd00;
+	}
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--elec-blue);
-  padding: 1rem;
-  border-radius: 0 0 1rem 1rem;
-}
+	/* ===========================
+		 🧩 Composants UI : Cards
+		 =========================== */
+	.card-fun {
+		position: relative;
+		background: rgba(0, 102, 255, 0.05);
+		border: 1px solid var(--elec-blue);
+		border-radius: 1rem 1rem 0 1rem;
+		padding: 1rem;
+	}
+	.card-fun::after {
+		content: "";
+		position: absolute;
+		right: -10px;
+		top: -10px;
+		border-width: 0 0 40px 40px;
+		border-style: solid;
+		border-color: transparent transparent var(--fun-orange) transparent;
+		opacity: 0.75;
+	}
 
-.navbar-left,
-.navbar-right {
-  display: flex;
-  align-items: center;
-}
+	/* ===========================
+		 ✅ Boutons custom
+		 =========================== */
+	.btn-green {
+		background: var(--fun-green);
+		color: #fff;
+	}
+	.btn-orange {
+		background: var(--fun-orange);
+		color: #fff;
+	}
 
-.navbar-right a {
-  margin-left: 1rem;
-}
+	/* ===========================
+		 🧱 Grille
+		 =========================== */
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 1rem;
+	}
 
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-.navbar a:hover {
-  text-decoration: underline;
-}
-.hidden {
-  display: none;
-}
+	/* ===========================
+		 🧭 Navbar
+		 =========================== */
+	.navbar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: var(--elec-blue);
+		padding: 1rem;
+		border-radius: 0;
+	}
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--elec-blue);
-  padding: 1rem;
-  border-radius: 0 0 1rem 1rem;
-}
-.navbar-left .shop-logo {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: white;
-  text-decoration: none;
-}
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-.navbar a:hover {
-  text-decoration: none;
-  opacity: 0.85;
-}
+	.navbar-left,
+	.navbar-right {
+		display: flex;
+		align-items: center;
+	}
 
-.dropdown {
-  position: relative;
-}
+	.navbar-right a {
+		margin-left: 1rem;
+		color: white;
+		text-decoration: none;
+		font-weight: normal;
+	}
 
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  background: white;
-  padding: 0.5rem;
-  border: 1px solid var(--elec-blue);
-  border-radius: 0.5rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  z-index: 1000;
-}
+	.navbar .navbar-brand,
+	.navbar .user-info {
+		color: white;
+		font-weight: normal;
+	}
 
-.dropdown-menu a {
-  display: block;
-  color: var(--elec-blue);
-  text-decoration: none;
-  padding: 0.25rem 0;
-}
+	.navbar .nav-link {
+		color: #e0e0e0;
+		font-weight: normal;
+		text-decoration: none;
+	}
 
-.dropdown-menu.show {
-  display: block;
-}
+	.navbar .nav-link:hover {
+		text-decoration: none;
+	}
+
+	.navbar-left .shop-logo {
+		font-weight: bold;
+		font-size: 1.2rem;
+		color: white;
+		text-decoration: none;
+	}
+
+	.navbar-right {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	.navbar a {
+		color: white;
+		text-decoration: none;
+		font-weight: normal;
+	}
+
+	.navbar a:hover {
+		text-decoration: none;
+		opacity: 0.85;
+	}
+
+	.navbar .shop-link:hover {
+		opacity: 1;
+		text-decoration: none;
+	}
+
+	/* ===========================
+		 ⬇️ Dropdown
+		 =========================== */
+	.dropdown {
+		position: relative;
+	}
+
+	.dropdown-menu {
+		display: none;
+		position: absolute;
+		right: 0;
+		background: white;
+		padding: 0.5rem;
+		border: 1px solid var(--elec-blue);
+		border-radius: 0.5rem;
+		box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		z-index: 1000;
+	}
+
+	.dropdown-menu a {
+		display: block;
+		color: var(--elec-blue);
+		text-decoration: none;
+		padding: 0.25rem 0;
+	}
+
+	.dropdown-menu.show {
+		display: block;
+	}

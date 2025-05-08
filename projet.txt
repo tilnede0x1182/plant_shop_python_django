@@ -289,104 +289,157 @@ application = get_wsgi_application()
 
 # plant_shop/static/css/app.css
 
-:root{--elec-blue:#0066ff;--fun-green:#00c851;--fun-orange:#ff6d00;--fun-yellow:#ffdd00}
-.card-fun{position:relative;background:rgba(0,102,255,.05);border:1px solid var(--elec-blue);
-   border-radius:1rem 1rem 0 1rem;padding:1rem}
-.card-fun::after{content:"";position:absolute;right:-10px;top:-10px;
-   border-width:0 0 40px 40px;border-style:solid;border-color:transparent transparent var(--fun-orange) transparent;opacity:.75}
-.btn-green{background:var(--fun-green);color:#fff}
-.btn-orange{background:var(--fun-orange);color:#fff}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-}
+/* ===========================
+   🎨 Variables globales
+   =========================== */
+	 :root {
+		--elec-blue: #0066ff;
+		--fun-green: #00c851;
+		--fun-orange: #ff6d00;
+		--fun-yellow: #ffdd00;
+	}
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--elec-blue);
-  padding: 1rem;
-  border-radius: 0 0 1rem 1rem;
-}
+	/* ===========================
+		 🧩 Composants UI : Cards
+		 =========================== */
+	.card-fun {
+		position: relative;
+		background: rgba(0, 102, 255, 0.05);
+		border: 1px solid var(--elec-blue);
+		border-radius: 1rem 1rem 0 1rem;
+		padding: 1rem;
+	}
+	.card-fun::after {
+		content: "";
+		position: absolute;
+		right: -10px;
+		top: -10px;
+		border-width: 0 0 40px 40px;
+		border-style: solid;
+		border-color: transparent transparent var(--fun-orange) transparent;
+		opacity: 0.75;
+	}
 
-.navbar-left,
-.navbar-right {
-  display: flex;
-  align-items: center;
-}
+	/* ===========================
+		 ✅ Boutons custom
+		 =========================== */
+	.btn-green {
+		background: var(--fun-green);
+		color: #fff;
+	}
+	.btn-orange {
+		background: var(--fun-orange);
+		color: #fff;
+	}
 
-.navbar-right a {
-  margin-left: 1rem;
-}
+	/* ===========================
+		 🧱 Grille
+		 =========================== */
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 1rem;
+	}
 
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-.navbar a:hover {
-  text-decoration: underline;
-}
-.hidden {
-  display: none;
-}
+	/* ===========================
+		 🧭 Navbar
+		 =========================== */
+	.navbar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: var(--elec-blue);
+		padding: 1rem;
+		border-radius: 0;
+	}
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--elec-blue);
-  padding: 1rem;
-  border-radius: 0 0 1rem 1rem;
-}
-.navbar-left .shop-logo {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: white;
-  text-decoration: none;
-}
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-.navbar a:hover {
-  text-decoration: underline;
-}
+	.navbar-left,
+	.navbar-right {
+		display: flex;
+		align-items: center;
+	}
 
-.dropdown {
-  position: relative;
-}
+	.navbar-right a {
+		margin-left: 1rem;
+		color: white;
+		text-decoration: none;
+		font-weight: normal;
+	}
 
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  background: white;
-  padding: 0.5rem;
-  border: 1px solid var(--elec-blue);
-  border-radius: 0.5rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  z-index: 1000;
-}
+	.navbar .navbar-brand,
+	.navbar .user-info {
+		color: white;
+		font-weight: normal;
+	}
 
-.dropdown-menu a {
-  display: block;
-  color: var(--elec-blue);
-  text-decoration: none;
-  padding: 0.25rem 0;
-}
+	.navbar .nav-link {
+		color: #e0e0e0;
+		font-weight: normal;
+		text-decoration: none;
+	}
 
-.dropdown-menu.show {
-  display: block;
-}
+	.navbar .nav-link:hover {
+		text-decoration: none;
+	}
+
+	.navbar-left .shop-logo {
+		font-weight: bold;
+		font-size: 1.2rem;
+		color: white;
+		text-decoration: none;
+	}
+
+	.navbar-right {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	.navbar a {
+		color: white;
+		text-decoration: none;
+		font-weight: normal;
+	}
+
+	.navbar a:hover {
+		text-decoration: none;
+		opacity: 0.85;
+	}
+
+	.navbar .shop-link:hover {
+		opacity: 1;
+		text-decoration: none;
+	}
+
+	/* ===========================
+		 ⬇️ Dropdown
+		 =========================== */
+	.dropdown {
+		position: relative;
+	}
+
+	.dropdown-menu {
+		display: none;
+		position: absolute;
+		right: 0;
+		background: white;
+		padding: 0.5rem;
+		border: 1px solid var(--elec-blue);
+		border-radius: 0.5rem;
+		box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		z-index: 1000;
+	}
+
+	.dropdown-menu a {
+		display: block;
+		color: var(--elec-blue);
+		text-decoration: none;
+		padding: 0.25rem 0;
+	}
+
+	.dropdown-menu.show {
+		display: block;
+	}
 
 # plant_shop/static/js/app.js
 
@@ -430,7 +483,7 @@ window.Cart = {
 		let e = 0;
 		for (const r in t) e += t[r].quantity;
 		const a = document.getElementById("cart-link");
-		a && (a.innerText = "🛒 Panier" + (e > 0 ? " (" + e + ")" : ""));
+		a && (a.innerText = "Mon Panier" + (e > 0 ? " (" + e + ")" : ""));
 	},
 	renderOrderReview: function (
 		t = "order-review-container",
@@ -516,22 +569,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Dropdown logic
-  const toggle = document.querySelector(".dropdown-toggle");
-  const menu = document.querySelector(".dropdown-menu");
-
-  toggle.addEventListener("click", function (e) {
-    e.preventDefault();
-    menu.classList.toggle("show");
-  });
-
-  document.addEventListener("click", function (e) {
-    if (!e.target.closest(".dropdown")) {
-      menu.classList.remove("show");
-    }
-  });
-
-  // Init cart
   Cart.renderOrderReview();
   Cart.updateNavbarCount();
   Cart.render();
@@ -542,12 +579,23 @@ document.addEventListener("DOMContentLoaded", function () {
 {% extends "layouts/base.html" %}
 {% block title %}Modifier plante{% endblock %}
 {% block content %}
-<h1>✏️ Modifier {{ plant.name }}</h1>
-<form method="post">{% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn-green">Mettre à jour</button>
-</form>
-<a href="{% url 'admin_plants' %}">← Retour</a>
+<div class="container mt-4">
+  <h1 class="mb-4">Modifier la plante</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger small">{{ field.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+		<button type="submit" class="btn btn-primary">Mettre à jour</button>
+  </form>
+  <a href="{% url 'admin_plants' %}" class="btn btn-secondary mt-3">Retour</a>
+</div>
 {% endblock %}
 
 # plant_shop/templates/admin/plants/index.html
@@ -591,12 +639,12 @@ document.addEventListener("DOMContentLoaded", function () {
 {% extends "layouts/base.html" %}
 {% block title %}Nouvelle plante{% endblock %}
 {% block content %}
-<h1>Nouvelle plante</h1>
-<form method="post">{% csrf_token %}
+<h1 class="mb-4">Nouvelle Plante (Admin)</h1>
+<form method="post" class="border p-4 shadow-sm rounded bg-light">{% csrf_token %}
   {{ form.as_p }}
-  <button type="submit" class="btn-green">Créer</button>
+  <button type="submit" class="btn btn-success">Créer</button>
 </form>
-<a href="{% url 'admin_plants' %}">← Retour</a>
+<a href="{% url 'admin_plants' %}" class="btn btn-secondary mt-3">Retour</a>
 {% endblock %}
 
 # plant_shop/templates/admin/users/edit.html
@@ -604,12 +652,23 @@ document.addEventListener("DOMContentLoaded", function () {
 {% extends "layouts/base.html" %}
 {% block title %}Modifier utilisateur{% endblock %}
 {% block content %}
-<h1>✏️ Modifier {{ user.email }}</h1>
-<form method="post">{% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn-green">Mettre à jour</button>
-</form>
-<a href="{% url 'admin_users' %}">← Retour</a>
+<div class="container mt-4">
+  <h1 class="mb-4">Modifier l'utilisateur</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger small">{{ field.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+  </form>
+  <a href="{% url 'admin_users' %}" class="btn btn-secondary mt-3">Retour</a>
+</div>
 {% endblock %}
 
 # plant_shop/templates/admin/users/index.html
@@ -653,12 +712,12 @@ document.addEventListener("DOMContentLoaded", function () {
 {% extends "layouts/base.html" %}
 {% block title %}Nouvel utilisateur{% endblock %}
 {% block content %}
-<h1>Nouvel utilisateur</h1>
-<form method="post">{% csrf_token %}
+<h1 class="mb-4">Nouvel Utilisateur 👤</h1>
+<form method="post" class="border p-4 shadow-sm rounded bg-light">{% csrf_token %}
   {{ form.as_p }}
-  <button type="submit" class="btn-green">Créer</button>
+  <button type="submit" class="btn btn-success">Créer</button>
 </form>
-<a href="{% url 'admin_users' %}">← Retour</a>
+<a href="{% url 'admin_users' %}" class="btn btn-secondary mt-3">Retour</a>
 {% endblock %}
 
 # plant_shop/templates/admin/users/show.html
@@ -680,7 +739,7 @@ document.addEventListener("DOMContentLoaded", function () {
   </form>
 </div>
 
-<a href="{% url 'admin_users' %}" class="btn btn-secondary mt-3">← Retour</a>
+<a href="{% url 'admin_users' %}" class="btn btn-secondary mt-3">Retour</a>
 {% endblock %}
 
 # plant_shop/templates/carts/index.html
@@ -698,7 +757,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	<title>{% block title %}PlantShop{% endblock %}</title>
 	{% load static %}
 	<link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-	<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'css/app.css' %}">
 	<script src="https://unpkg.com/react@18/umd/react.production.min.js" defer></script>
 	<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" defer></script>
@@ -706,7 +765,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <body>
 	{% include "layouts/_navbar.html" %}
-	{% block content %}{% endblock %}
+	<div class="container mt-4">
+		{% block content %}{% endblock %}
+</div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="{% static 'js/app.js' %}" defer></script>
 </body>
 
@@ -714,36 +776,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
 # plant_shop/templates/layouts/_navbar.html
 
-<nav class="navbar">
-	<div class="navbar-left">
-		<a href="{% url 'root' %}" class="shop-logo">🌿 PlantShop</a>
-	</div>
-	<div class="navbar-right">
-		{% if user.is_authenticated %}
-		<span style="color:white; font-weight:bold; margin-right: 1rem;">
-			{{ user.name|title }}{% if user.admin %} (Administrateur){% endif %}
-		</span>
-		{% endif %}
-		<a id="cart-link" href="{% url 'cart_index' %}">🛒 Panier</a>
-		{% if not user.is_authenticated %}
-		<a href="{% url 'login' %}">🔐 Connexion</a>
-		<a href="{% url 'signup' %}">📝 Inscription</a>
-		{% endif %}
-		{% if user.is_authenticated %}
-		<a href="{% url 'profile' %}">👤 Mon Profil</a>
-		<a href="{% url 'orders_index' %}">📦 Commandes</a>
-		{% if user.admin %}
-		<div class="dropdown">
-			<a href="#" class="dropdown-toggle">🔧 Admin ▼</a>
-			<div class="dropdown-menu">
-				<a href="{% url 'admin_plants' %}">Gestion Plantes</a>
-				<a href="{% url 'admin_users' %}">Gestion Utilisateurs</a>
-			</div>
-		</div>
-		{% endif %}
-		<a href="{% url 'logout' %}">🚪 Déconnexion</a>
-		{% endif %}
-	</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand shop-link" href="{% url 'root' %}">🌿 PlantShop</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item d-flex align-items-center text-white me-3">
+            <strong>{{ user.name|title }}{% if user.admin %} (Administrateur){% endif %}</strong>
+          </li>
+					<li class="nav-item"><a id="cart-link" class="nav-link" href="{% url 'cart_index' %}">Mon Panier</a></li>
+					<li class="nav-item"><a class="nav-link" href="{% url 'orders_index' %}">Mes Commandes</a></li>
+					<li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Mon Profil</a></li>
+          {% if user.admin %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Admin</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'admin_plants' %}">Gestion Plantes</a></li>
+              <li><a class="dropdown-item" href="{% url 'admin_users' %}">Gestion Utilisateurs</a></li>
+            </ul>
+          </li>
+          {% endif %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Déconnexion</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Inscription</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Connexion</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
 </nav>
 
 # plant_shop/templates/orders/index.html
@@ -751,28 +815,36 @@ document.addEventListener("DOMContentLoaded", function () {
 {% extends "layouts/base.html" %}
 {% block title %}Mes Commandes{% endblock %}
 {% block content %}
-<h1>📦 Mes Commandes</h1>
+<h1 class="mb-4">📦 Mes Commandes</h1>
+
 {% if orders %}
-  <ul>
+  <div class="grid">
     {% for order in orders %}
-      <li>
-        <strong>Commande n°{{ order.display_number }}</strong> — {{ order.status }} — {{ order.total_price }} €
-        <ul>
-          {% for item in order.items.all %}
-          <li>{{ item.quantity }} × {{ item.plant.name }}</li>
-          {% endfor %}
-        </ul>
-      </li>
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-2">Commande n°{{ order.display_number }}</h5>
+          <p class="mb-1"><strong>Statut :</strong> {{ order.status }}</p>
+          <p class="mb-2"><strong>Total :</strong> {{ order.total_price }} €</p>
+          <ul class="mb-2">
+            {% for item in order.items.all %}
+              <li>{{ item.quantity }} × {{ item.plant.name }}</li>
+            {% endfor %}
+          </ul>
+          <a href="{% url 'orders_show' order_id=order.id %}"" class="btn btn-sm btn-outline-primary">Détails</a>
+        </div>
+      </div>
     {% endfor %}
-  </ul>
+  </div>
 {% else %}
   <p>Aucune commande.</p>
 {% endif %}
 
 <script>
-if (window.location.search.includes("cleared=1")) {
-  Cart.clear();
-}
+	document.addEventListener("DOMContentLoaded", function () {
+		if (window.location.search.includes("cleared=1")) {
+			Cart.clear();
+		}
+	});
 </script>
 {% endblock %}
 
@@ -781,13 +853,17 @@ if (window.location.search.includes("cleared=1")) {
 {% extends "layouts/base.html" %}
 {% block title %}Nouvelle commande{% endblock %}
 {% block content %}
-<h1>📦 Nouvelle Commande</h1>
+<h1 class="text-center mb-4">📦 Valider ma commande</h1>
+
+<div id="order-review-container" class="mb-4">
+  <p class="alert alert-info">Chargement du panier...</p>
+</div>
+
 <form method="post" action="{% url 'order_create' %}">
   {% csrf_token %}
   <input type="hidden" id="order-items-input" name="items">
-  <div id="order-review-container"></div>
-  <div class="text-end mt-3">
-    <button class="btn-green" type="submit">Confirmer la commande</button>
+  <div class="text-end">
+    <button class="btn btn-success" type="submit">Confirmer la commande</button>
   </div>
 </form>
 {% endblock %}
@@ -803,17 +879,31 @@ if (window.location.search.includes("cleared=1")) {
 {% extends "layouts/base.html" %}{% block title %}Plantes{% endblock %}
 {% block content %}
 {% if request.user.is_authenticated and request.user.admin %}
-<div class="text-end mb-3" style="margin-top: 2rem;">
-	<a href="{% url 'admin_plants_new' %}" class="btn btn-green">Nouvelle Plante</a>
+<div class="mb-3 mt-4">
+	<a href="{% url 'admin_plants_new' %}" class="btn btn-success">Nouvelle Plante</a>
 </div>
+
 {% endif %}
-<div class="grid" style="margin-top: 2rem;">
+<div class="row mt-4">
 	{% for plant in plants %}
-	<div class="card-fun mb-3">
-		<h3><a href="{% url 'plant_show' plant.id %}">{{ plant.name }}</a></h3>
-		<p><strong>Prix :</strong> {{ plant.price }} €{% if user.admin %} — <strong>Stock :</strong> {{ plant.stock }}{% endif %}</p>
-		<button class="btn-green w-100"
-			onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">Ajouter au panier</button>
+	<div class="col-md-4">
+		<div class="card mb-4 shadow-sm">
+			<div class="card-body">
+				<h5 class="card-title">
+					<a href="{% url 'plant_show' plant.id %}" class="text-decoration-none text-dark">{{ plant.name }}</a>
+				</h5>
+				<p class="card-text">
+					<strong>Prix :</strong> {{ plant.price }} €<br>
+					{% if user.admin %}
+					<strong>Stock :</strong> {{ plant.stock }} unités
+					{% endif %}
+				</p>
+				<button class="btn btn-success w-100"
+					onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">
+					Ajouter au panier
+				</button>
+			</div>
+		</div>
 	</div>
 	{% endfor %}
 </div>
@@ -825,24 +915,30 @@ if (window.location.search.includes("cleared=1")) {
 {% block title %}{{ plant.name }}{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">{{ plant.name }}</h1>
-<div class="card-fun mb-4">
-  <p><strong>Prix :</strong> {{ plant.price }} €</p>
-  {% if user.admin %}<p><strong>Stock :</strong> {{ plant.stock }}</p>{% endif %}
-  <p>{{ plant.description }}</p>
-  <button class="btn-green w-100" onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">Ajouter au panier</button>
-</div>
-
-{% if user.is_authenticated and user.admin %}
-  <div class="d-flex gap-2">
-    <a href="{% url 'admin_plants_edit' plant.id %}" class="btn btn-warning">✏️ Modifier</a>
-    <form method="post" action="{% url 'admin_plants_delete' plant.id %}" onsubmit="return confirm('Supprimer cette plante ?');">
-      {% csrf_token %}
-      <button class="btn btn-danger">🗑️ Supprimer</button>
-    </form>
+<div class="card shadow-lg">
+  <div class="card-body">
+    <h1 class="card-title">{{ plant.name }}</h1>
+    <p><strong>Prix :</strong> {{ plant.price }} €</p>
+    <p><strong>Description :</strong> {{ plant.description }}</p>
+    {% if user.admin %}<p><strong>Stock :</strong> {{ plant.stock }} unités</p>{% endif %}
+    <div class="d-flex flex-wrap gap-2 mb-2">
+      <button class="btn btn-success"
+        onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">
+        Ajouter au panier
+      </button>
+      {% if user.is_authenticated and user.admin %}
+        <a href="{% url 'admin_plants_edit' plant.id %}" class="btn btn-warning">Modifier</a>
+        <form method="post" action="{% url 'admin_plants_delete' plant.id %}" onsubmit="return confirm('Supprimer cette plante ?');">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
+      {% endif %}
+    </div>
+    <div class="mt-3">
+      <a href="{% url 'plants_index' %}" class="btn btn-secondary">← Retour à la liste</a>
+    </div>
   </div>
-{% endif %}
-<a href="{% url 'plants_index' %}">← Retour à la liste</a>
+</div>
 {% endblock %}
 
 # plant_shop/templates/users/login.html
@@ -880,7 +976,7 @@ if (window.location.search.includes("cleared=1")) {
   <li><strong>Nom complet :</strong> {{ user.name }}</li>
   <li><strong>Admin :</strong> {{ user.admin|yesno:"Oui,Non" }}</li>
 </ul>
-<a href="{% url 'admin_users_edit' user.id %}" class="btn btn-warning mt-3">✏️ Modifier mon profil</a>
+<a href="{% url 'admin_users_edit' user.id %}" class="btn btn-primary mt-3">Modifier mon profil</a>
 {% endblock %}
 
 # plant_shop/templates/users/signup.html
@@ -888,12 +984,14 @@ if (window.location.search.includes("cleared=1")) {
 {% extends "layouts/base.html" %}
 {% block title %}Inscription{% endblock %}
 {% block content %}
-<h1>Inscription</h1>
-<form method="post">
-  {% csrf_token %}
+<h1 class="mb-4">Inscription</h1>
+
+<form method="post" class="card p-4 shadow">{% csrf_token %}
   {{ form.as_p }}
-  <button type="submit" class="btn-green">S'inscrire</button>
+  <button type="submit" class="btn-green w-100 mt-3">S'inscrire</button>
 </form>
+
+<a href="{% url 'login' %}" class="btn btn-secondary mt-3">Déjà inscrit ? Se connecter</a>
 {% endblock %}
 
 # plant_shop/tests.py

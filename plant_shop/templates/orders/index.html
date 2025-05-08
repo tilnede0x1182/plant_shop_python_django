@@ -1,29 +1,34 @@
 {% extends "layouts/base.html" %}
 {% block title %}Mes Commandes{% endblock %}
 {% block content %}
-<h1>📦 Mes Commandes</h1>
-{% if orders %}
-  <ul>
-    {% for order in orders %}
-      <li>
-        <strong>Commande n°{{ order.display_number }}</strong> — {{ order.status }} — {{ order.total_price }} €
-        <ul>
-          {% for item in order.items.all %}
-          <li>{{ item.quantity }} × {{ item.plant.name }}</li>
-          {% endfor %}
-        </ul>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>Aucune commande.</p>
-{% endif %}
+	<h1 class="mb-4">📦 Mes Commandes</h1>
 
-<script>
-	document.addEventListener("DOMContentLoaded", function () {
-		if (window.location.search.includes("cleared=1")) {
-			Cart.clear();
-		}
-	});
+	{% if orders %}
+		<div class="d-flex flex-column gap-3">
+			{% for order in orders %}
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<h5 class="card-title mb-2">Commande n°{{ order.display_number }}</h5>
+					<p class="mb-1"><strong>Statut :</strong> {{ order.status }}</p>
+					<p class="mb-2"><strong>Total :</strong> {{ order.total_price }} €</p>
+					<ul class="mb-2">
+						{% for item in order.items.all %}
+						<li>{{ item.quantity }} × {{ item.plant.name }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	{% else %}
+	<p>Aucune commande.</p>
+	{% endif %}
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			if (window.location.search.includes("cleared=1")) {
+				Cart.clear();
+			}
+		});
 	</script>
 {% endblock %}
