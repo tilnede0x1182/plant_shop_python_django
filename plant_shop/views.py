@@ -11,7 +11,11 @@ admin_required = user_passes_test(lambda u: u.is_authenticated and u.admin,
                                   login_url="/admin/")
 
 def plant_index(request):
-    return render(request, "plants/index.html", {"plants": Plant.objects.order_by("name")})
+    plants = sorted(
+        Plant.objects.filter(stock__gt=0),
+        key=lambda p: unidecode(p.name.lower())
+    )
+    return render(request, "plants/index.html", {"plants": plants})
 
 def plant_show(request, pk):
     return render(request, "plants/show.html", {"plant": get_object_or_404(Plant, pk=pk)})

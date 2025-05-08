@@ -21,7 +21,7 @@
 					{% endif %}
 				</p>
 				<button class="btn btn-success w-100"
-					onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">
+        onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }}, {{ plant.stock }})">
 					Ajouter au panier
 				</button>
 			</div>
