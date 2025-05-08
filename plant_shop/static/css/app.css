@@ -120,6 +120,10 @@
 		text-decoration: none;
 	}
 
+	.navbar.custom-navbar {
+		background-color: #28862b;
+	}
+
 	/* ===========================
 		 ⬇️ Dropdown
 		 =========================== */
