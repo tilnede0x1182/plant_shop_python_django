@@ -4,6 +4,7 @@ from plant_shop.forms import CustomUserCreationForm
 from .models import User, Plant, Order, OrderItem
 from django.contrib.auth import login
 from django.contrib import messages
+from unidecode import unidecode
 import json
 
 admin_required = user_passes_test(lambda u: u.is_authenticated and u.admin,
@@ -43,20 +44,32 @@ def order_new(request):
 @login_required
 def order_create(request):
     items = json.loads(request.POST.get("items", "[]"))
+    plants = {p.id: p for p in Plant.objects.filter(id__in=[i["plant_id"] for i in items])}
+
+    for it in items:
+        plant = plants.get(it["plant_id"])
+        if not plant:
+            messages.error(request, "Plante introuvable.")
+            return redirect("cart_index")
+        qty = int(it["quantity"])
+        if qty > plant.stock:
+            messages.error(request, f"Stock insuffisant pour {plant.name}.")
+            return redirect("cart_index")
+
     order = Order.objects.create(user=request.user, status="confirmed")
     total = 0
     for it in items:
-        plant = Plant.objects.get(pk=it["plant_id"])
-        qty   = int(it["quantity"])
+        plant = plants[it["plant_id"]]
+        qty = int(it["quantity"])
         OrderItem.objects.create(order=order, plant=plant, quantity=qty)
         plant.stock -= qty
         plant.save(update_fields=["stock"])
         total += plant.price * qty
 
-        order.total_price = total
-        order.save(update_fields=["total_price"])
-        messages.success(request, "Commande confirmée.")
-        return redirect("/orders/?cleared=1")
+    order.total_price = total
+    order.save(update_fields=["total_price"])
+    messages.success(request, "Commande confirmée.")
+    return redirect("/orders/?cleared=1")
 
 @login_required
 def profile_view(request):
@@ -64,8 +77,8 @@ def profile_view(request):
 
 @admin_required
 def admin_plants_index(request):
-    return render(request, "admin/plants/index.html", {"plants": Plant.objects.order_by("name")})
-
+    plants = sorted(Plant.objects.all(), key=lambda p: unidecode(p.name.lower()))
+    return render(request, "admin/plants/index.html", {"plants": plants})
 @admin_required
 def admin_plants_new(request):
     from django.forms import modelform_factory
@@ -94,7 +107,8 @@ def admin_plants_delete(request, pk):
 
 @admin_required
 def admin_users_index(request):
-    return render(request, "admin/users/index.html", {"users": User.objects.order_by("-admin", "name")})
+    users = sorted(User.objects.all(), key=lambda u: (not u.admin, unidecode(u.name.lower())))
+    return render(request, "admin/users/index.html", {"users": users})
 
 @admin_required
 def admin_users_show(request, pk):

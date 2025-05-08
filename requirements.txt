@@ -1,2 +1,7 @@
 Django>=4.2,<5.0
 Faker>=8.0
+Unidecode
+gunicorn
+psycopg2-binary
+python-decouple
+whitenoise
