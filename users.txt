@@ -1,0 +1,30 @@
+Liste des utilisateurs générés :
+
+Admins
+
+admin1@plantshop.com password
+admin2@plantshop.com password
+admin3@plantshop.com password
+
+Utilisateurs normaux
+
+elisemichaud@example.org password
+juliette93@example.com password
+le-goffsuzanne@example.com password
+legroslucy@example.net password
+philippechartier@example.org password
+jacquesbrunel@example.com password
+zhamon@example.net password
+victor79@example.org password
+hparis@example.net password
+beguepaul@example.org password
+gerard61@example.com password
+rochervalentine@example.org password
+daniellecolas@example.com password
+flemoine@example.org password
+paulinehubert@example.com password
+bergeraurore@example.org password
+jpasquier@example.com password
+adelaide19@example.net password
+zfrancois@example.net password
+paulfernandez@example.com password

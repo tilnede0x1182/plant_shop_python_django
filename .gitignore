@@ -35,5 +35,5 @@ media/
 *.bak
 *.orig
 
-# fichiers générés
-users.txt
+script.sh
+projet.txt
