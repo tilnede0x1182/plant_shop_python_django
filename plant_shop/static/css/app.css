@@ -1,121 +1,124 @@
-/* ===========================
-   🎨 Variables globales
-   =========================== */
-	 :root {
-		--elec-blue: #0066ff;
-		--fun-green: #00c851;
-		--fun-orange: #ff6d00;
-		--fun-yellow: #ffdd00;
-	}
+/* =======================================
+   🌐 Variables globales (couleurs thème)
+   ======================================= */
+:root {
+	--elec-blue: #0066ff;
+	--fun-green: #00c851;
+	--fun-orange: #ff6d00;
+	--fun-yellow: #ffdd00;
+}
 
-	/* ===========================
-		 ✅ Boutons custom
-		 =========================== */
-	.btn-green {
-		background: var(--fun-green);
-		color: #fff;
-	}
 
-	/* ===========================
-		 🧭 Navbar
-		 =========================== */
-	.navbar {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		background: var(--elec-blue);
-		padding: 1rem;
-		border-radius: 0;
-	}
+/* ================================
+   🎛️ Composants UI : Boutons
+   ================================ */
+.btn-green {
+	background: var(--fun-green);
+	color: #fff;
+}
 
-	.navbar-left,
-	.navbar-right {
-		display: flex;
-		align-items: center;
-	}
 
-	.navbar-right a {
-		margin-left: 1rem;
-		color: white;
-		text-decoration: none;
-		font-weight: normal;
-	}
+/* ================================
+   🧭 Composants UI : Navbar
+   ================================ */
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: var(--elec-blue);
+	padding: 1rem;
+	border-radius: 0;
+}
 
-	.navbar .navbar-brand,
-	.navbar .user-info {
-		color: white;
-		font-weight: normal;
-	}
+.navbar-left,
+.navbar-right {
+	display: flex;
+	align-items: center;
+}
 
-	.navbar .nav-link {
-		color: #e0e0e0;
-		font-weight: normal;
-		text-decoration: none;
-	}
+.navbar-right {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+}
 
-	.navbar .nav-link:hover {
-		text-decoration: none;
-	}
+.navbar-right a {
+	margin-left: 1rem;
+	color: white;
+	text-decoration: none;
+	font-weight: normal;
+}
 
-	.navbar-left .shop-logo {
-		font-weight: bold;
-		font-size: 1.2rem;
-		color: white;
-		text-decoration: none;
-	}
+.navbar .navbar-brand,
+.navbar .user-info {
+	color: white;
+	font-weight: normal;
+}
 
-	.navbar-right {
-		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-	}
+.navbar .nav-link {
+	color: #e0e0e0;
+	font-weight: normal;
+	text-decoration: none;
+}
 
-	.navbar a {
-		color: white;
-		text-decoration: none;
-		font-weight: normal;
-	}
+.navbar .nav-link:hover {
+	text-decoration: none;
+}
 
-	.navbar a:hover {
-		text-decoration: none;
-		opacity: 0.85;
-	}
+.navbar-left .shop-logo {
+	font-weight: bold;
+	font-size: 1.2rem;
+	color: white;
+	text-decoration: none;
+}
 
-	.navbar .shop-link:hover {
-		opacity: 1;
-		text-decoration: none;
-	}
+.navbar a {
+	color: white;
+	text-decoration: none;
+	font-weight: normal;
+}
 
-	.navbar.custom-navbar {
-		background-color: #28862b;
-	}
+.navbar a:hover {
+	text-decoration: none;
+	opacity: 0.85;
+}
 
-	/* ===========================
-		 ⬇️ Dropdown
-		 =========================== */
-	.dropdown {
-		position: relative;
-	}
+.navbar .shop-link:hover {
+	opacity: 1;
+	text-decoration: none;
+}
 
-	.dropdown-menu {
-		display: none;
-		position: absolute;
-		right: 0;
-		background: white;
-		padding: 0.5rem;
-		border: 1px solid var(--elec-blue);
-		border-radius: 0.5rem;
-		box-shadow: 0 0 10px rgba(0,0,0,0.1);
-		z-index: 1000;
-	}
+.navbar.custom-navbar {
+	background-color: #28862b;
+}
 
-	.dropdown-menu a {
-		display: block;
-		color: var(--elec-blue);
-		text-decoration: none;
-		padding: 0.25rem 0;
-	}
 
-	.dropdown-menu.show {
-		display: block;
-	}
+/* ================================
+   🔽 Composants UI : Dropdown
+   ================================ */
+.dropdown {
+	position: relative;
+}
+
+.dropdown-menu {
+	display: none;
+	position: absolute;
+	right: 0;
+	background: white;
+	padding: 0.5rem;
+	border: 1px solid var(--elec-blue);
+	border-radius: 0.5rem;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+}
+
+.dropdown-menu a {
+	display: block;
+	color: var(--elec-blue);
+	text-decoration: none;
+	padding: 0.25rem 0;
+}
+
+.dropdown-menu.show {
+	display: block;
+}
