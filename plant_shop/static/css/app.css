@@ -9,45 +9,11 @@
 	}
 
 	/* ===========================
-		 🧩 Composants UI : Cards
-		 =========================== */
-	.card-fun {
-		position: relative;
-		background: rgba(0, 102, 255, 0.05);
-		border: 1px solid var(--elec-blue);
-		border-radius: 1rem 1rem 0 1rem;
-		padding: 1rem;
-	}
-	.card-fun::after {
-		content: "";
-		position: absolute;
-		right: -10px;
-		top: -10px;
-		border-width: 0 0 40px 40px;
-		border-style: solid;
-		border-color: transparent transparent var(--fun-orange) transparent;
-		opacity: 0.75;
-	}
-
-	/* ===========================
 		 ✅ Boutons custom
 		 =========================== */
 	.btn-green {
 		background: var(--fun-green);
 		color: #fff;
-	}
-	.btn-orange {
-		background: var(--fun-orange);
-		color: #fff;
-	}
-
-	/* ===========================
-		 🧱 Grille
-		 =========================== */
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: 1rem;
 	}
 
 	/* ===========================

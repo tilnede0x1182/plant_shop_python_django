@@ -74,58 +74,123 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from plant_shop.models import Plant, Order, OrderItem
 from faker import Faker
-import random, pathlib
+import random
+import pathlib
 
+# # Variables globales
+NB_ADMINS = 3
+NB_USERS = 20
+NB_PLANTS = 30
+NOMS_PLANTES = [
+	"Rose", "Tulipe", "Lavande", "Orchidée", "Basilic", "Menthe", "Pivoine", "Tournesol",
+	"Cactus (Echinopsis)", "Bambou", "Camomille (Matricaria recutita)", "Sauge (Salvia officinalis)",
+	"Romarin (Rosmarinus officinalis)", "Thym (Thymus vulgaris)", "Laurier-rose (Nerium oleander)",
+	"Aloe vera", "Jasmin (Jasminum officinale)", "Hortensia (Hydrangea macrophylla)",
+	"Marguerite (Leucanthemum vulgare)", "Géranium (Pelargonium graveolens)", "Fuchsia (Fuchsia magellanica)",
+	"Anémone (Anemone coronaria)", "Azalée (Rhododendron simsii)", "Chrysanthème (Chrysanthemum morifolium)",
+	"Digitale pourpre (Digitalis purpurea)", "Glaïeul (Gladiolus hortulanus)", "Lys (Lilium candidum)",
+	"Violette (Viola odorata)", "Muguet (Convallaria majalis)", "Iris (Iris germanica)",
+	"Lavandin (Lavandula intermedia)", "Érable du Japon (Acer palmatum)", "Citronnelle (Cymbopogon citratus)",
+	"Pin parasol (Pinus pinea)", "Cyprès (Cupressus sempervirens)", "Olivier (Olea europaea)",
+	"Papyrus (Cyperus papyrus)", "Figuier (Ficus carica)", "Eucalyptus (Eucalyptus globulus)",
+	"Acacia (Acacia dealbata)", "Bégonia (Begonia semperflorens)", "Calathea (Calathea ornata)",
+	"Dieffenbachia (Dieffenbachia seguine)", "Ficus elastica", "Sansevieria (Sansevieria trifasciata)",
+	"Philodendron (Philodendron scandens)", "Yucca (Yucca elephantipes)", "Zamioculcas zamiifolia",
+	"Monstera deliciosa", "Pothos (Epipremnum aureum)", "Agave (Agave americana)", "Cactus raquette (Opuntia ficus-indica)",
+	"Palmier-dattier (Phoenix dactylifera)", "Amaryllis (Hippeastrum hybridum)", "Bleuet (Centaurea cyanus)",
+	"Cœur-de-Marie (Lamprocapnos spectabilis)", "Croton (Codiaeum variegatum)", "Dracaena (Dracaena marginata)",
+	"Hosta (Hosta plantaginea)", "Lierre (Hedera helix)", "Mimosa (Acacia dealbata)"
+]
+
+# # Fonctions utilitaires
+def get_nom_plante(index):
+	noms_taille = len(NOMS_PLANTES)
+	if NB_PLANTS > noms_taille:
+		return f"{NOMS_PLANTES[index % noms_taille]} {index // noms_taille + 1}"
+	return NOMS_PLANTES[index % noms_taille]
+
+def reset_database():
+	OrderItem.objects.all().delete()
+	Order.objects.all().delete()
+	Plant.objects.all().delete()
+	User = get_user_model()
+	User.objects.all().delete()
+
+def creer_admins(fake):
+	User = get_user_model()
+	admins = []
+	for index in range(NB_ADMINS):
+		admins.append(User.objects.create_user(
+			email=f"admin{index+1}@plantshop.com", password="password",
+			admin=True, name=fake.name()))
+	return admins
+
+def creer_users(fake):
+	User = get_user_model()
+	users = []
+	for index in range(NB_USERS):
+		users.append(User.objects.create_user(
+			email=fake.unique.email(), password="password",
+			admin=False, name=fake.name()))
+	return users
+
+def ecrire_fichier_credentials(admins, users):
+	with pathlib.Path("users.txt").open("w", encoding="utf-8") as fichier:
+		fichier.write("Liste des utilisateurs générés :\n\n")
+		fichier.write("Admins\n\n")
+		for admin in admins:
+			fichier.write(f"{admin.email} password\n")
+		fichier.write("\nUtilisateurs normaux\n\n")
+		for user in users:
+			fichier.write(f"{user.email} password\n")
+
+def creer_plantes(fake):
+	plants = []
+	for index in range(NB_PLANTS):
+		plants.append(Plant.objects.create(
+			name=get_nom_plante(index),
+			price=random.randint(5, 50),
+			description=fake.sentence(nb_words=10),
+			stock=random.randint(5, 30)))
+	return plants
+
+def creer_commandes(admins, users, plants):
+	for utilisateur in admins + users:
+		commande = Order.objects.create(
+			user=utilisateur, total_price=0,
+			status=random.choice(["confirmed","pending","shipped","delivered"]))
+		total = 0
+		for _ in range(2):
+			plante = random.choice(plants)
+			quantite = min(random.randint(1, 5), plante.stock)
+			if quantite == 0:
+				continue
+			OrderItem.objects.create(order=commande, plant=plante, quantity=quantite)
+			plante.stock -= quantite
+			plante.save(update_fields=["stock"])
+			total += plante.price * quantite
+		commande.total_price = total
+		commande.save(update_fields=["total_price"])
+
+# # Main Commande
 class Command(BaseCommand):
-    help = "Equivalent seeds.rb"
+	help = "Initialisation de la seed (équivalent seeds.rb)"
 
-    def handle(self, *args, **opts):
-        self.stdout.write("🔄 Initialisation de la seed...")
-        fake = Faker("fr_FR")
-        txt = pathlib.Path("users.txt").open("w", encoding="utf-8")
-        self.stdout.write("🧹 Suppression des données existantes...")
-        OrderItem.objects.all().delete()
-        Order.objects.all().delete()
-        Plant.objects.all().delete()
-        User = get_user_model()
-        User.objects.all().delete()
-
-        self.stdout.write("👤 Création des utilisateurs...")
-        admins, users = [], []
-        for i in range(3):
-            admins.append(User.objects.create_user(
-                email=f"admin{i+1}@plantshop.com",
-                password="password", admin=True, name=fake.name()))
-
-        for _ in range(20):
-            users.append(User.objects.create_user(
-                email=fake.unique.email(), password="password",
-                admin=False, name=fake.name()))
-
-        txt.write("Liste des utilisateurs générés :\n")
-        txt.write("\nAdmins\n\n");  [txt.write(f"{u.email} password\n") for u in admins]
-        txt.write("\nUtilisateurs normaux\n\n"); [txt.write(f"{u.email} password\n") for u in users]; txt.close()
-
-        self.stdout.write("🌱 Création des plantes...")
-        plants=[]
-        for _ in range(30):
-            plants.append(Plant.objects.create(
-                name=" ".join(fake.words(2)), price=random.randint(5,50),
-                description=fake.sentence(nb_words=10), stock=random.randint(5,30)))
-
-        self.stdout.write("🧾 Création des commandes...")
-        for u in admins+users:
-            o = Order.objects.create(user=u, total_price=0,
-                                     status=random.choice(["confirmed","pending","shipped","delivered"]))
-            total=0
-            for _ in range(2):
-                p=random.choice(plants); qty=min(random.randint(1,5),p.stock)
-                if qty==0: continue
-                OrderItem.objects.create(order=o, plant=p, quantity=qty)
-                p.stock-=qty; p.save(update_fields=["stock"])
-                total+=p.price*qty
-            o.total_price=total; o.save(update_fields=["total_price"])
-        self.stdout.write("✅ Seed terminée.")
+	def handle(self, *args, **opts):
+		self.stdout.write("🔄 Initialisation de la seed...")
+		fake = Faker("fr_FR")
+		self.stdout.write("🧹 Suppression des données existantes...")
+		reset_database()
+		self.stdout.write("👤 Création des administrateurs...")
+		admins = creer_admins(fake)
+		self.stdout.write("👥 Création des utilisateurs...")
+		users = creer_users(fake)
+		ecrire_fichier_credentials(admins, users)
+		self.stdout.write("🌱 Création des plantes...")
+		plants = creer_plantes(fake)
+		self.stdout.write("🧾 Création des commandes...")
+		creer_commandes(admins, users, plants)
+		self.stdout.write("✅ Seed terminée.")
 
 # plant_shop/models.py
 
@@ -447,135 +512,358 @@ application = get_wsgi_application()
 
 # plant_shop/static/js/app.js
 
-// Copie littérale du application.js Rails
-window.Cart = {
-	get: function () {
+/**
+ * Classe représentant un panier client.
+ */
+class Cart {
+	/**
+	 * Récupère le panier depuis le localStorage.
+	 * @returns {Object} Panier
+	 */
+	static get() {
 		try {
 			return JSON.parse(localStorage.getItem("cart") || "{}");
-		} catch (t) {
+		} catch (e) {
 			return {};
 		}
-	},
-	save: function (t) {
-		localStorage.setItem("cart", JSON.stringify(t));
-	},
-	add: function (t, e, r) {
-		const a = this.get();
-		a[t]
-			? (a[t].quantity += 1)
-			: (a[t] = { id: t, name: e, price: r, quantity: 1 }),
-			this.save(a),
-			this.updateNavbarCount();
-	},
-	update: function (t, e) {
-		const r = parseInt(e);
-		if (isNaN(r) || r < 1) return alert("Quantité invalide");
-		const a = this.get();
-		a[t] && ((a[t].quantity = r), this.save(a), this.render());
-	},
-	remove: function (t) {
-		const e = this.get();
-		delete e[t], this.save(e), this.render();
-	},
-  clear: function () {
-    localStorage.removeItem("cart"),
-    this.render(),
-    this.updateNavbarCount();
-  },
-	updateNavbarCount: function () {
-		const t = this.get();
-		let e = 0;
-		for (const r in t) e += t[r].quantity;
-		const a = document.getElementById("cart-link");
-		a && (a.innerText = "Mon Panier" + (e > 0 ? " (" + e + ")" : ""));
-	},
-	renderOrderReview: function (
-		t = "order-review-container",
-		e = "order-items-input"
-	) {
-		const r = document.getElementById(t),
-			a = document.getElementById(e),
-			n = this.get();
-		let i = 0;
-		if (!r || !a) return;
-		if (0 === Object.keys(n).length)
-			return (
-				(r.innerHTML =
-					'<p class="alert alert-warning">Votre panier est vide.</p>'),
-				void (a.value = "")
-			);
-		let l =
-			'<table class="table shadow"><thead class="table-dark"><tr><th>Plante</th><th>Quantité</th><th>Total</th></tr></thead><tbody>';
-		const o = [];
-		for (const t in n) {
-			const e = n[t],
-				r = e.quantity * e.price;
-			i += r;
-			const a =
-				"order-review-container" === t
-					? "cart-plant-link confirmed"
-					: "cart-plant-link";
-			(l +=
-				"<tr><td><a href='/plants/" +
-				e.id +
-				"' class='" +
-				a +
-				"'>" +
-				e.name +
-				"</a></td><td>" +
-				e.quantity +
-				"</td><td>" +
-				r +
-				" €</td></tr>"),
-				o.push({ plant_id: parseInt(t), quantity: e.quantity });
-		}
-		(l += "</tbody></table>"),
-			(l += "<p class='text-end fw-bold'>Total : " + i + " €</p>"),
-			(r.innerHTML = l),
-			(a.value = JSON.stringify(o));
-	},
-	render: function () {
-		const t = document.getElementById("cart-container");
-		if (!t) return;
-		const e = this.get();
-		let r = "",
-			a = 0;
-		if (0 === Object.keys(e).length)
-			r = "<p class='alert alert-info'>Votre panier est vide.</p>";
-		else {
-			r += `\n        <table class="table">\n          <thead class="table-dark">\n            <tr>\n              <th>Plante</th>\n              <th>Quantité</th>\n              <th>Action</th>\n            </tr>\n          </thead>\n          <tbody>\n      `;
-			for (const t in e) {
-				const n = e[t];
-				(a += n.price * n.quantity),
-					(r +=
-						`\n          <tr>\n            <td><a href="/plants/` +
-						t +
-						`" class="text-decoration-none">` +
-						n.name +
-						`</a></td>\n            <td>\n              <input type="number" min="1" class="form-control form-control-sm" style="max-width:44px;" value="` +
-						n.quantity +
-						`" onchange="Cart.update(` +
-						t +
-						`, this.value)">\n            </td>\n            <td>\n              <button class="btn btn-danger btn-sm" onclick="Cart.remove(` +
-						t +
-						`)">Retirer</button>\n            </td>\n          </tr>\n        `);
-			}
-			r +=
-				`\n          </tbody>\n        </table>\n        <p class="text-end fw-bold">Total : ` +
-				a +
-				` €</p>\n        <div class="d-flex justify-content-between">\n          <button class="btn btn-outline-secondary btn-sm" onclick="Cart.clear()">Vider le panier</button>\n          <a href="/orders/new" class="btn btn-primary">Passer la commande</a>\n        </div>\n      `;
-		}
-		t.innerHTML = r;
-	},
-};
-document.addEventListener("DOMContentLoaded", function () {
-	Cart.renderOrderReview(), Cart.updateNavbarCount(), Cart.render();
-});
+	}
 
+	/**
+	 * Sauvegarde le panier dans le localStorage.
+	 * @param {Object} cart Panier à sauvegarder
+	 */
+	static save(cart) {
+		localStorage.setItem("cart", JSON.stringify(cart));
+	}
+
+	/**
+	 * Enregistre l'état du panier et met à jour l'affichage du compteur dans la navbar.
+	 *
+	 * @param {Object} cart - Objet représentant le contenu actuel du panier.
+	 */
+	static #commitCart(cart) {
+		this.save(cart);
+		this.updateNavbarCount();
+	}
+
+	// ## Fonctions de modification
+
+	/**
+	 * Ajoute un article dans le panier ou incrémente sa quantité.
+	 * @param {number} id Identifiant produit
+	 * @param {string} name Nom produit
+	 * @param {number} price Prix unitaire
+	 * @param {number} stock Quantité maximale disponible
+	 */
+	static add(id, name, price, stock) {
+		const cart = this.get();
+		if (!cart[id]) {
+			cart[id] = { id, name, price, quantity: 0, stock };
+		}
+		if (cart[id].quantity >= stock) {
+			showStockAlert(name, stock);
+			setTimeout(() => {
+				cart[id].quantity = stock;
+				Cart.#commitCart(cart);
+			}, 300);
+		} else {
+			cart[id].quantity++;
+			Cart.#commitCart(cart);
+		}
+	}
+
+	/**
+	 * Met à jour la quantité d’un article.
+	 * @param {number} id Identifiant de l’article
+	 * @param {number} value Quantité saisie
+	 */
+	static update(id, value) {
+		let qty = parseInt(value);
+		if (isNaN(qty)) return;
+
+		const cart = this.get();
+		if (!cart[id]) return;
+
+		const input = document.querySelector(`input[data-cart-id='${id}']`);
+		const stock = parseInt(input.dataset.stock || "1");
+
+		if (qty < 1) qty = 1;
+		if (qty > stock) qty = stock;
+
+		cart[id].quantity = qty;
+		input.value = qty;
+		this.save(cart);
+		this.render();
+		this.updateNavbarCount();
+	}
+
+	/**
+	 * Met à jour avec un délai pour éviter le blocage de la saisie.
+	 * @param {number} id Identifiant article
+	 * @param {HTMLInputElement} input Champ input de quantité
+	 */
+	static delayedUpdate(id, input) {
+		clearTimeout(input._cartTimer);
+		input._cartTimer = setTimeout(() => {
+			Cart.update(id, input.value);
+		}, 300);
+	}
+
+	/**
+	 * Supprime un article du panier.
+	 * @param {number} id Identifiant de l’article
+	 */
+	static remove(id) {
+		const cart = this.get();
+		delete cart[id];
+		this.save(cart);
+		this.render();
+	}
+
+	/**
+	 * Vide entièrement le panier.
+	 */
+	static clear() {
+		localStorage.removeItem("cart");
+		this.render();
+		this.updateNavbarCount();
+	}
+
+	/**
+	 * Met à jour le compteur du panier dans la barre de navigation.
+	 */
+	static updateNavbarCount() {
+		const cart = this.get();
+		let count = 0;
+		for (const id in cart) {
+			count += cart[id].quantity;
+		}
+		const link = document.getElementById("cart-link");
+		if (link) {
+			link.textContent = "Mon Panier" + (count > 0 ? ` (${count})` : "");
+		}
+	}
+
+	/**
+	 * Affiche le résumé de commande.
+	 * @param {string} containerId ID du conteneur
+	 * @param {string} inputId ID du champ caché de données
+	 */
+	static renderOrderReview(
+		containerId = "order-review-container",
+		inputId = "order-items-input"
+	) {
+		const container = document.getElementById(containerId);
+		const input = document.getElementById(inputId);
+		const cart = this.get();
+		let total = 0;
+
+		if (!container || !input) return;
+
+		container.innerHTML = "";
+
+		if (Object.keys(cart).length === 0) {
+			const msg = document.createElement("p");
+			msg.className = "alert alert-warning";
+			msg.textContent = "Votre panier est vide.";
+			container.appendChild(msg);
+			input.value = "";
+			return;
+		}
+
+		const table = document.createElement("table");
+		table.className = "table shadow";
+
+		const thead = document.createElement("thead");
+		thead.className = "table-dark";
+		const headerRow = document.createElement("tr");
+		["Plante", "Quantité", "Total"].forEach((text) => {
+			const th = document.createElement("th");
+			th.textContent = text;
+			headerRow.appendChild(th);
+		});
+		thead.appendChild(headerRow);
+		table.appendChild(thead);
+
+		const tbody = document.createElement("tbody");
+		const items = [];
+
+		for (const id in cart) {
+			const item = cart[id];
+			const subtotal = item.quantity * item.price;
+			total += subtotal;
+
+			const row = document.createElement("tr");
+
+			const td1 = document.createElement("td");
+			const link = document.createElement("a");
+			link.href = `/plants/${item.id}`;
+			link.className = "cart-plant-link confirmed";
+			link.textContent = item.name;
+			td1.appendChild(link);
+
+			const td2 = document.createElement("td");
+			td2.textContent = item.quantity;
+
+			const td3 = document.createElement("td");
+			td3.textContent = `${subtotal} €`;
+
+			row.appendChild(td1);
+			row.appendChild(td2);
+			row.appendChild(td3);
+			tbody.appendChild(row);
+
+			items.push({ plant_id: parseInt(id), quantity: item.quantity });
+		}
+
+		table.appendChild(tbody);
+		container.appendChild(table);
+
+		const totalP = document.createElement("p");
+		totalP.className = "text-end fw-bold";
+		totalP.textContent = `Total : ${total} €`;
+		container.appendChild(totalP);
+
+		input.value = JSON.stringify(items);
+	}
+
+	/**
+	 * Affiche le contenu du panier dans l’interface.
+	 */
+	static render() {
+		const container = document.getElementById("cart-container");
+		if (!container) return;
+
+		const cart = this.get();
+		container.innerHTML = "";
+		let total = 0;
+
+		if (Object.keys(cart).length === 0) {
+			const msg = document.createElement("p");
+			msg.className = "alert alert-info";
+			msg.textContent = "Votre panier est vide.";
+			container.appendChild(msg);
+			return;
+		}
+
+		const table = document.createElement("table");
+		table.className = "table";
+
+		const thead = document.createElement("thead");
+		thead.className = "table-dark";
+		const headerRow = document.createElement("tr");
+		["Plante", "Quantité", "Action"].forEach((text) => {
+			const th = document.createElement("th");
+			th.textContent = text;
+			headerRow.appendChild(th);
+		});
+		thead.appendChild(headerRow);
+		table.appendChild(thead);
+
+		const tbody = document.createElement("tbody");
+
+		for (const id in cart) {
+			const item = cart[id];
+			total += item.price * item.quantity;
+
+			const row = document.createElement("tr");
+
+			const td1 = document.createElement("td");
+			const link = document.createElement("a");
+			link.href = `/plants/${id}`;
+			link.className = "text-decoration-none";
+			link.textContent = item.name;
+			td1.appendChild(link);
+
+			const td2 = document.createElement("td");
+			const input = document.createElement("input");
+			input.type = "number";
+			input.min = "1";
+			input.className = "form-control form-control-sm";
+			input.style.maxWidth = "70px";
+			input.value = item.quantity;
+			input.dataset.cartId = id;
+			input.dataset.stock = item.stock;
+			input.addEventListener("input", () =>
+				Cart.delayedUpdate(id, input)
+			);
+			input.addEventListener("blur", () => Cart.update(id, input.value));
+			td2.appendChild(input);
+
+			const td3 = document.createElement("td");
+			const btn = document.createElement("button");
+			btn.className = "btn btn-danger btn-sm";
+			btn.textContent = "Retirer";
+			btn.addEventListener("click", () => Cart.remove(id));
+			td3.appendChild(btn);
+
+			row.appendChild(td1);
+			row.appendChild(td2);
+			row.appendChild(td3);
+			tbody.appendChild(row);
+		}
+
+		table.appendChild(tbody);
+		container.appendChild(table);
+
+		const totalP = document.createElement("p");
+		totalP.className = "text-end fw-bold";
+		totalP.textContent = `Total : ${total} €`;
+		container.appendChild(totalP);
+
+		const controls = document.createElement("div");
+		controls.className = "d-flex justify-content-between";
+
+		const clearBtn = document.createElement("button");
+		clearBtn.className = "btn btn-outline-secondary btn-sm";
+		clearBtn.textContent = "Vider le panier";
+		clearBtn.addEventListener("click", () => Cart.clear());
+
+		const orderLink = document.createElement("a");
+		orderLink.href = "/orders/new";
+		orderLink.className = "btn btn-primary";
+		orderLink.textContent = "Passer la commande";
+
+		controls.appendChild(clearBtn);
+		controls.appendChild(orderLink);
+
+		container.appendChild(controls);
+	}
+}
+
+function showStockAlert(plantName, stock) {
+	const alert = document.createElement("div");
+	alert.className =
+		"alert alert-warning fade position-absolute top-0 start-50 translate-middle-x mt-3 shadow";
+	alert.role = "alert";
+	alert.style.zIndex = "1055";
+	alert.style.maxWidth = "600px";
+	alert.style.pointerEvents = "none";
+	const message = document.createTextNode(
+		"Stock insuffisant pour pour cette plante ("
+	);
+	const strong = document.createElement("strong");
+	strong.textContent = plantName;
+	const message2 = document.createTextNode(
+		`), actuellement, il en reste ${stock}.`
+	);
+	alert.appendChild(message);
+	alert.appendChild(strong);
+	alert.appendChild(message2);
+	document.body.appendChild(alert);
+	setTimeout(() => alert.classList.add("show"), 10);
+	setTimeout(() => {
+		alert.classList.remove("show");
+		alert.classList.add("fade");
+		setTimeout(() => alert.remove(), 300);
+	}, 3000);
+}
+
+// Appel au chargement de la page
 document.addEventListener("DOMContentLoaded", function () {
-  Cart.renderOrderReview();
-  Cart.updateNavbarCount();
-  Cart.render();
+	Cart.renderOrderReview();
+	Cart.updateNavbarCount();
+	Cart.render();
 });
 
 # plant_shop/templates/admin/plants/edit.html
@@ -795,37 +1083,39 @@ document.addEventListener("DOMContentLoaded", function () {
 # plant_shop/templates/layouts/_navbar.html
 
 <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
-  <div class="container">
-    <a class="navbar-brand shop-link" href="{% url 'root' %}">🌿 PlantShop</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        {% if user.is_authenticated %}
-          <li class="nav-item d-flex align-items-center text-white me-3">
-            <strong>{{ user.name|title }}{% if user.admin %} (Administrateur){% endif %}</strong>
-          </li>
-					<li class="nav-item"><a id="cart-link" class="nav-link" href="{% url 'cart_index' %}">Mon Panier</a></li>
-					<li class="nav-item"><a class="nav-link" href="{% url 'orders_index' %}">Mes Commandes</a></li>
-					<li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Mon Profil</a></li>
-          {% if user.admin %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Admin</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'admin_plants' %}">Gestion Plantes</a></li>
-              <li><a class="dropdown-item" href="{% url 'admin_users' %}">Gestion Utilisateurs</a></li>
-            </ul>
-          </li>
-          {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Déconnexion</a></li>
-        {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Inscription</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Connexion</a></li>
-        {% endif %}
-      </ul>
-    </div>
-  </div>
+	<div class="container">
+		<a class="navbar-brand shop-link" href="{% url 'root' %}">🌿 PlantShop</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ms-auto">
+				{% if user.is_authenticated %}
+				<li class="nav-item d-flex align-items-center text-white me-3">
+					<strong>{{ user.name|title }}{% if user.admin %} (Administrateur){% endif %}</strong>
+				</li>
+				{% endif %}
+				<li class="nav-item"><a id="cart-link" class="nav-link" href="{% url 'cart_index' %}">Mon Panier</a></li>
+				{% if user.is_authenticated %}
+				<li class="nav-item"><a class="nav-link" href="{% url 'orders_index' %}">Mes Commandes</a></li>
+				<li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Mon Profil</a></li>
+				{% if user.admin %}
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Admin</a>
+					<ul class="dropdown-menu">
+						<li><a class="dropdown-item" href="{% url 'admin_plants' %}">Gestion Plantes</a></li>
+						<li><a class="dropdown-item" href="{% url 'admin_users' %}">Gestion Utilisateurs</a></li>
+					</ul>
+				</li>
+				{% endif %}
+				<li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Déconnexion</a></li>
+				{% else %}
+				<li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Inscription</a></li>
+				<li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Connexion</a></li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
 </nav>
 
 # plant_shop/templates/orders/index.html
@@ -853,7 +1143,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		{% endfor %}
 	</div>
 	{% else %}
-	<p>Aucune commande.</p>
+	<div class="alert alert-info shadow-sm">
+		Pas encore de commandes.<br>
+	</div>
 	{% endif %}
 
 	<script>
@@ -916,7 +1208,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					{% endif %}
 				</p>
 				<button class="btn btn-success w-100"
-					onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }})">
+        onclick="Cart.add({{ plant.id }}, '{{ plant.name|escapejs }}', {{ plant.price }}, {{ plant.stock }})">
 					Ajouter au panier
 				</button>
 			</div>
@@ -952,7 +1244,7 @@ document.addEventListener("DOMContentLoaded", function () {
       {% endif %}
     </div>
     <div class="mt-3">
-      <a href="{% url 'plants_index' %}" class="btn btn-secondary">← Retour à la liste</a>
+      <a href="{% url 'plants_index' %}" class="btn btn-secondary">Retour à la liste</a>
     </div>
   </div>
 </div>
@@ -963,21 +1255,25 @@ document.addEventListener("DOMContentLoaded", function () {
 {% extends "layouts/base.html" %}
 {% block title %}Connexion{% endblock %}
 {% block content %}
-<h1>🔐 Connexion</h1>
-<form method="post">
+<h1 class="text-center mb-4">🔐 Connexion</h1>
+
+<form method="post" class="card p-4 shadow mx-auto" style="max-width: 400px;">
   {% csrf_token %}
   {% if form.errors %}
     <div class="alert alert-danger">Nom d'utilisateur ou mot de passe invalide.</div>
   {% endif %}
-	<div>
-		<label>Email :</label>
-		<input type="email" name="username" required>
-	</div>
-  <div>
-    <label>Mot de passe :</label>
-    <input type="password" name="password" required>
+
+  <div class="mb-3">
+    <label for="id_username" class="form-label">Email</label>
+    <input type="email" name="username" class="form-control" required id="id_username">
   </div>
-  <button class="btn-green" type="submit">Se connecter</button>
+
+  <div class="mb-3">
+    <label for="id_password" class="form-label">Mot de passe</label>
+    <input type="password" name="password" class="form-control" required id="id_password">
+  </div>
+
+  <button type="submit" class="btn btn-primary w-100">Se connecter</button>
 </form>
 {% endblock %}
 
@@ -1001,14 +1297,17 @@ document.addEventListener("DOMContentLoaded", function () {
 {% extends "layouts/base.html" %}
 {% block title %}Inscription{% endblock %}
 {% block content %}
-<h1 class="mb-4">Inscription</h1>
-
-<form method="post" class="card p-4 shadow">{% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn-green w-100 mt-3">S'inscrire</button>
-</form>
-
-<a href="{% url 'login' %}" class="btn btn-secondary mt-3">Déjà inscrit ? Se connecter</a>
+<div class="container mt-4" style="max-width: 500px;">
+  <h1 class="mb-4 text-center">📝 Inscription</h1>
+  <form method="post" class="border p-4 shadow-sm rounded bg-light">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success w-100">Créer un compte</button>
+  </form>
+  <div class="text-center mt-3">
+    <a href="{% url 'login' %}" class="btn btn-outline-secondary">Déjà inscrit ? Se connecter</a>
+  </div>
+</div>
 {% endblock %}
 
 # plant_shop/tests.py
@@ -1062,7 +1361,11 @@ admin_required = user_passes_test(lambda u: u.is_authenticated and u.admin,
                                   login_url="/admin/")
 
 def plant_index(request):
-    return render(request, "plants/index.html", {"plants": Plant.objects.order_by("name")})
+    plants = sorted(
+        Plant.objects.filter(stock__gt=0),
+        key=lambda p: unidecode(p.name.lower())
+    )
+    return render(request, "plants/index.html", {"plants": plants})
 
 def plant_show(request, pk):
     return render(request, "plants/show.html", {"plant": get_object_or_404(Plant, pk=pk)})
@@ -1095,20 +1398,32 @@ def order_new(request):
 @login_required
 def order_create(request):
     items = json.loads(request.POST.get("items", "[]"))
+    plants = {p.id: p for p in Plant.objects.filter(id__in=[i["plant_id"] for i in items])}
+
+    for it in items:
+        plant = plants.get(it["plant_id"])
+        if not plant:
+            messages.error(request, "Plante introuvable.")
+            return redirect("cart_index")
+        qty = int(it["quantity"])
+        if qty > plant.stock:
+            messages.error(request, f"Stock insuffisant pour {plant.name}.")
+            return redirect("cart_index")
+
     order = Order.objects.create(user=request.user, status="confirmed")
     total = 0
     for it in items:
-        plant = Plant.objects.get(pk=it["plant_id"])
-        qty   = int(it["quantity"])
+        plant = plants[it["plant_id"]]
+        qty = int(it["quantity"])
         OrderItem.objects.create(order=order, plant=plant, quantity=qty)
         plant.stock -= qty
         plant.save(update_fields=["stock"])
         total += plant.price * qty
 
-        order.total_price = total
-        order.save(update_fields=["total_price"])
-        messages.success(request, "Commande confirmée.")
-        return redirect("/orders/?cleared=1")
+    order.total_price = total
+    order.save(update_fields=["total_price"])
+    messages.success(request, "Commande confirmée.")
+    return redirect("/orders/?cleared=1")
 
 @login_required
 def profile_view(request):
@@ -1146,7 +1461,8 @@ def admin_plants_delete(request, pk):
 
 @admin_required
 def admin_users_index(request):
-    return render(request, "admin/users/index.html", {"users": User.objects.order_by("-admin", "name")})
+    users = sorted(User.objects.all(), key=lambda u: (not u.admin, unidecode(u.name.lower())))
+    return render(request, "admin/users/index.html", {"users": users})
 
 @admin_required
 def admin_users_show(request, pk):
@@ -1222,26 +1538,26 @@ admin3@plantshop.com password
 
 Utilisateurs normaux
 
-elisemichaud@example.org password
-juliette93@example.com password
-le-goffsuzanne@example.com password
-legroslucy@example.net password
-philippechartier@example.org password
-jacquesbrunel@example.com password
-zhamon@example.net password
-victor79@example.org password
-hparis@example.net password
-beguepaul@example.org password
-gerard61@example.com password
-rochervalentine@example.org password
-daniellecolas@example.com password
-flemoine@example.org password
-paulinehubert@example.com password
-bergeraurore@example.org password
-jpasquier@example.com password
-adelaide19@example.net password
-zfrancois@example.net password
-paulfernandez@example.com password
+toussaintjosette@example.org password
+noemi20@example.net password
+uvincent@example.net password
+pierreanne@example.com password
+gabriellemenard@example.com password
+andrejeannine@example.org password
+guichardstephanie@example.net password
+gabriel21@example.org password
+qleconte@example.net password
+toussaintantoine@example.org password
+gilbertalexandria@example.org password
+sjacob@example.com password
+jjacob@example.net password
+aubryjosephine@example.net password
+marechalodette@example.org password
+jeanadelaide@example.org password
+bernarddiallo@example.org password
+kguilbert@example.org password
+verdiercorinne@example.net password
+zblot@example.net password
 
 
 # ===== STRUCTURE DU PROJET =====
@@ -1282,9 +1598,8 @@ paulfernandez@example.com password
 │   │   ├── css
 │   │   │   └── app.css
 │   │   ├── favicon.ico
-│   │   ├── js
-│   │   │   └── app.js
-│   │   └── Plant_shop_détendu.ico:Zone.Identifier
+│   │   └── js
+│   │       └── app.js
 │   ├── templates
 │   │   ├── admin
 │   │   │   ├── plants
@@ -1331,4 +1646,4 @@ paulfernandez@example.com password
 ├── script.sh
 └── users.txt
 
-22 directories, 63 files
+22 directories, 62 files
