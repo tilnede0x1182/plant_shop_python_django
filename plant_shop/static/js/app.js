@@ -2,303 +2,352 @@
  * Classe représentant un panier client.
  */
 class Cart {
-  /**
-   * Récupère le panier depuis le localStorage.
-   * @returns {Object} Panier
-   */
-  static get() {
-    try {
-      return JSON.parse(localStorage.getItem("cart") || "{}");
-    } catch (e) {
-      return {};
-    }
-  }
+	/**
+	 * Récupère le panier depuis le localStorage.
+	 * @returns {Object} Panier
+	 */
+	static get() {
+		try {
+			return JSON.parse(localStorage.getItem("cart") || "{}");
+		} catch (e) {
+			return {};
+		}
+	}
 
-  /**
-   * Sauvegarde le panier dans le localStorage.
-   * @param {Object} cart Panier à sauvegarder
-   */
-  static save(cart) {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }
+	/**
+	 * Sauvegarde le panier dans le localStorage.
+	 * @param {Object} cart Panier à sauvegarder
+	 */
+	static save(cart) {
+		localStorage.setItem("cart", JSON.stringify(cart));
+	}
 
-  /**
-   * Ajoute un article au panier.
-   * @param {number} id Identifiant de l’article
-   * @param {string} name Nom de l’article
-   * @param {number} price Prix de l’article
-   * @param {number} stock Stock disponible
-   */
-  static add(id, name, price, stock) {
-    const cart = this.get();
-    if (cart[id]) {
-      if (cart[id].quantity < stock) {
-        cart[id].quantity += 1;
-      }
-    } else {
-      cart[id] = { id, name, price, quantity: 1, stock };
-    }
-    this.save(cart);
-    this.updateNavbarCount();
-  }
+	/**
+	 * Enregistre l'état du panier et met à jour l'affichage du compteur dans la navbar.
+	 *
+	 * @param {Object} cart - Objet représentant le contenu actuel du panier.
+	 */
+	static #commitCart(cart) {
+		this.save(cart);
+		this.updateNavbarCount();
+	}
 
-  /**
-   * Met à jour la quantité d’un article.
-   * @param {number} id Identifiant de l’article
-   * @param {number} value Quantité saisie
-   */
-  static update(id, value) {
-    let qty = parseInt(value);
-    if (isNaN(qty)) return;
+	// ## Fonctions de modification
 
-    const cart = this.get();
-    if (!cart[id]) return;
+	/**
+	 * Ajoute un article dans le panier ou incrémente sa quantité.
+	 * @param {number} id Identifiant produit
+	 * @param {string} name Nom produit
+	 * @param {number} price Prix unitaire
+	 * @param {number} stock Quantité maximale disponible
+	 */
+	static add(id, name, price, stock) {
+		const cart = this.get();
+		if (!cart[id]) {
+			cart[id] = { id, name, price, quantity: 0, stock };
+		}
+		if (cart[id].quantity >= stock) {
+			showStockAlert(name, stock);
+			setTimeout(() => {
+				cart[id].quantity = stock;
+				Cart.#commitCart(cart);
+			}, 300);
+		} else {
+			cart[id].quantity++;
+			Cart.#commitCart(cart);
+		}
+	}
 
-    const input = document.querySelector(`input[data-cart-id='${id}']`);
-    const stock = parseInt(input.dataset.stock || "1");
+	/**
+	 * Met à jour la quantité d’un article.
+	 * @param {number} id Identifiant de l’article
+	 * @param {number} value Quantité saisie
+	 */
+	static update(id, value) {
+		let qty = parseInt(value);
+		if (isNaN(qty)) return;
 
-    if (qty < 1) qty = 1;
-    if (qty > stock) qty = stock;
+		const cart = this.get();
+		if (!cart[id]) return;
 
-    cart[id].quantity = qty;
-    input.value = qty;
-    this.save(cart);
-    this.render();
-    this.updateNavbarCount();
-  }
+		const input = document.querySelector(`input[data-cart-id='${id}']`);
+		const stock = parseInt(input.dataset.stock || "1");
 
-  /**
-   * Met à jour avec un délai pour éviter le blocage de la saisie.
-   * @param {number} id Identifiant article
-   * @param {HTMLInputElement} input Champ input de quantité
-   */
-  static delayedUpdate(id, input) {
-    clearTimeout(input._cartTimer);
-    input._cartTimer = setTimeout(() => {
-      Cart.update(id, input.value);
-    }, 300);
-  }
+		if (qty < 1) qty = 1;
+		if (qty > stock) qty = stock;
 
-  /**
-   * Supprime un article du panier.
-   * @param {number} id Identifiant de l’article
-   */
-  static remove(id) {
-    const cart = this.get();
-    delete cart[id];
-    this.save(cart);
-    this.render();
-  }
+		cart[id].quantity = qty;
+		input.value = qty;
+		this.save(cart);
+		this.render();
+		this.updateNavbarCount();
+	}
 
-  /**
-   * Vide entièrement le panier.
-   */
-  static clear() {
-    localStorage.removeItem("cart");
-    this.render();
-    this.updateNavbarCount();
-  }
+	/**
+	 * Met à jour avec un délai pour éviter le blocage de la saisie.
+	 * @param {number} id Identifiant article
+	 * @param {HTMLInputElement} input Champ input de quantité
+	 */
+	static delayedUpdate(id, input) {
+		clearTimeout(input._cartTimer);
+		input._cartTimer = setTimeout(() => {
+			Cart.update(id, input.value);
+		}, 300);
+	}
 
-  /**
-   * Met à jour le compteur du panier dans la barre de navigation.
-   */
-  static updateNavbarCount() {
-    const cart = this.get();
-    let count = 0;
-    for (const id in cart) {
-      count += cart[id].quantity;
-    }
-    const link = document.getElementById("cart-link");
-    if (link) {
-      link.textContent = "Mon Panier" + (count > 0 ? ` (${count})` : "");
-    }
-  }
+	/**
+	 * Supprime un article du panier.
+	 * @param {number} id Identifiant de l’article
+	 */
+	static remove(id) {
+		const cart = this.get();
+		delete cart[id];
+		this.save(cart);
+		this.render();
+	}
 
-  /**
-   * Affiche le résumé de commande.
-   * @param {string} containerId ID du conteneur
-   * @param {string} inputId ID du champ caché de données
-   */
-  static renderOrderReview(containerId = "order-review-container", inputId = "order-items-input") {
-    const container = document.getElementById(containerId);
-    const input = document.getElementById(inputId);
-    const cart = this.get();
-    let total = 0;
+	/**
+	 * Vide entièrement le panier.
+	 */
+	static clear() {
+		localStorage.removeItem("cart");
+		this.render();
+		this.updateNavbarCount();
+	}
 
-    if (!container || !input) return;
+	/**
+	 * Met à jour le compteur du panier dans la barre de navigation.
+	 */
+	static updateNavbarCount() {
+		const cart = this.get();
+		let count = 0;
+		for (const id in cart) {
+			count += cart[id].quantity;
+		}
+		const link = document.getElementById("cart-link");
+		if (link) {
+			link.textContent = "Mon Panier" + (count > 0 ? ` (${count})` : "");
+		}
+	}
 
-    container.innerHTML = "";
+	/**
+	 * Affiche le résumé de commande.
+	 * @param {string} containerId ID du conteneur
+	 * @param {string} inputId ID du champ caché de données
+	 */
+	static renderOrderReview(
+		containerId = "order-review-container",
+		inputId = "order-items-input"
+	) {
+		const container = document.getElementById(containerId);
+		const input = document.getElementById(inputId);
+		const cart = this.get();
+		let total = 0;
 
-    if (Object.keys(cart).length === 0) {
-      const msg = document.createElement("p");
-      msg.className = "alert alert-warning";
-      msg.textContent = "Votre panier est vide.";
-      container.appendChild(msg);
-      input.value = "";
-      return;
-    }
+		if (!container || !input) return;
 
-    const table = document.createElement("table");
-    table.className = "table shadow";
+		container.innerHTML = "";
 
-    const thead = document.createElement("thead");
-    thead.className = "table-dark";
-    const headerRow = document.createElement("tr");
-    ["Plante", "Quantité", "Total"].forEach(text => {
-      const th = document.createElement("th");
-      th.textContent = text;
-      headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+		if (Object.keys(cart).length === 0) {
+			const msg = document.createElement("p");
+			msg.className = "alert alert-warning";
+			msg.textContent = "Votre panier est vide.";
+			container.appendChild(msg);
+			input.value = "";
+			return;
+		}
 
-    const tbody = document.createElement("tbody");
-    const items = [];
+		const table = document.createElement("table");
+		table.className = "table shadow";
 
-    for (const id in cart) {
-      const item = cart[id];
-      const subtotal = item.quantity * item.price;
-      total += subtotal;
+		const thead = document.createElement("thead");
+		thead.className = "table-dark";
+		const headerRow = document.createElement("tr");
+		["Plante", "Quantité", "Total"].forEach((text) => {
+			const th = document.createElement("th");
+			th.textContent = text;
+			headerRow.appendChild(th);
+		});
+		thead.appendChild(headerRow);
+		table.appendChild(thead);
 
-      const row = document.createElement("tr");
+		const tbody = document.createElement("tbody");
+		const items = [];
 
-      const td1 = document.createElement("td");
-      const link = document.createElement("a");
-      link.href = `/plants/${item.id}`;
-      link.className = "cart-plant-link confirmed";
-      link.textContent = item.name;
-      td1.appendChild(link);
+		for (const id in cart) {
+			const item = cart[id];
+			const subtotal = item.quantity * item.price;
+			total += subtotal;
 
-      const td2 = document.createElement("td");
-      td2.textContent = item.quantity;
+			const row = document.createElement("tr");
 
-      const td3 = document.createElement("td");
-      td3.textContent = `${subtotal} €`;
+			const td1 = document.createElement("td");
+			const link = document.createElement("a");
+			link.href = `/plants/${item.id}`;
+			link.className = "cart-plant-link confirmed";
+			link.textContent = item.name;
+			td1.appendChild(link);
 
-      row.appendChild(td1);
-      row.appendChild(td2);
-      row.appendChild(td3);
-      tbody.appendChild(row);
+			const td2 = document.createElement("td");
+			td2.textContent = item.quantity;
 
-      items.push({ plant_id: parseInt(id), quantity: item.quantity });
-    }
+			const td3 = document.createElement("td");
+			td3.textContent = `${subtotal} €`;
 
-    table.appendChild(tbody);
-    container.appendChild(table);
+			row.appendChild(td1);
+			row.appendChild(td2);
+			row.appendChild(td3);
+			tbody.appendChild(row);
 
-    const totalP = document.createElement("p");
-    totalP.className = "text-end fw-bold";
-    totalP.textContent = `Total : ${total} €`;
-    container.appendChild(totalP);
+			items.push({ plant_id: parseInt(id), quantity: item.quantity });
+		}
 
-    input.value = JSON.stringify(items);
-  }
+		table.appendChild(tbody);
+		container.appendChild(table);
 
-  /**
-   * Affiche le contenu du panier dans l’interface.
-   */
-  static render() {
-    const container = document.getElementById("cart-container");
-    if (!container) return;
+		const totalP = document.createElement("p");
+		totalP.className = "text-end fw-bold";
+		totalP.textContent = `Total : ${total} €`;
+		container.appendChild(totalP);
 
-    const cart = this.get();
-    container.innerHTML = "";
-    let total = 0;
+		input.value = JSON.stringify(items);
+	}
 
-    if (Object.keys(cart).length === 0) {
-      const msg = document.createElement("p");
-      msg.className = "alert alert-info";
-      msg.textContent = "Votre panier est vide.";
-      container.appendChild(msg);
-      return;
-    }
+	/**
+	 * Affiche le contenu du panier dans l’interface.
+	 */
+	static render() {
+		const container = document.getElementById("cart-container");
+		if (!container) return;
 
-    const table = document.createElement("table");
-    table.className = "table";
+		const cart = this.get();
+		container.innerHTML = "";
+		let total = 0;
 
-    const thead = document.createElement("thead");
-    thead.className = "table-dark";
-    const headerRow = document.createElement("tr");
-    ["Plante", "Quantité", "Action"].forEach(text => {
-      const th = document.createElement("th");
-      th.textContent = text;
-      headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+		if (Object.keys(cart).length === 0) {
+			const msg = document.createElement("p");
+			msg.className = "alert alert-info";
+			msg.textContent = "Votre panier est vide.";
+			container.appendChild(msg);
+			return;
+		}
 
-    const tbody = document.createElement("tbody");
+		const table = document.createElement("table");
+		table.className = "table";
 
-    for (const id in cart) {
-      const item = cart[id];
-      total += item.price * item.quantity;
+		const thead = document.createElement("thead");
+		thead.className = "table-dark";
+		const headerRow = document.createElement("tr");
+		["Plante", "Quantité", "Action"].forEach((text) => {
+			const th = document.createElement("th");
+			th.textContent = text;
+			headerRow.appendChild(th);
+		});
+		thead.appendChild(headerRow);
+		table.appendChild(thead);
 
-      const row = document.createElement("tr");
+		const tbody = document.createElement("tbody");
 
-      const td1 = document.createElement("td");
-      const link = document.createElement("a");
-      link.href = `/plants/${id}`;
-      link.className = "text-decoration-none";
-      link.textContent = item.name;
-      td1.appendChild(link);
+		for (const id in cart) {
+			const item = cart[id];
+			total += item.price * item.quantity;
 
-      const td2 = document.createElement("td");
-      const input = document.createElement("input");
-      input.type = "number";
-      input.min = "1";
-      input.className = "form-control form-control-sm";
-      input.style.maxWidth = "70px";
-      input.value = item.quantity;
-      input.dataset.cartId = id;
-      input.dataset.stock = item.stock;
-      input.addEventListener("input", () => Cart.delayedUpdate(id, input));
-      input.addEventListener("blur", () => Cart.update(id, input.value));
-      td2.appendChild(input);
+			const row = document.createElement("tr");
 
-      const td3 = document.createElement("td");
-      const btn = document.createElement("button");
-      btn.className = "btn btn-danger btn-sm";
-      btn.textContent = "Retirer";
-      btn.addEventListener("click", () => Cart.remove(id));
-      td3.appendChild(btn);
+			const td1 = document.createElement("td");
+			const link = document.createElement("a");
+			link.href = `/plants/${id}`;
+			link.className = "text-decoration-none";
+			link.textContent = item.name;
+			td1.appendChild(link);
 
-      row.appendChild(td1);
-      row.appendChild(td2);
-      row.appendChild(td3);
-      tbody.appendChild(row);
-    }
+			const td2 = document.createElement("td");
+			const input = document.createElement("input");
+			input.type = "number";
+			input.min = "1";
+			input.className = "form-control form-control-sm";
+			input.style.maxWidth = "70px";
+			input.value = item.quantity;
+			input.dataset.cartId = id;
+			input.dataset.stock = item.stock;
+			input.addEventListener("input", () =>
+				Cart.delayedUpdate(id, input)
+			);
+			input.addEventListener("blur", () => Cart.update(id, input.value));
+			td2.appendChild(input);
 
-    table.appendChild(tbody);
-    container.appendChild(table);
+			const td3 = document.createElement("td");
+			const btn = document.createElement("button");
+			btn.className = "btn btn-danger btn-sm";
+			btn.textContent = "Retirer";
+			btn.addEventListener("click", () => Cart.remove(id));
+			td3.appendChild(btn);
 
-    const totalP = document.createElement("p");
-    totalP.className = "text-end fw-bold";
-    totalP.textContent = `Total : ${total} €`;
-    container.appendChild(totalP);
+			row.appendChild(td1);
+			row.appendChild(td2);
+			row.appendChild(td3);
+			tbody.appendChild(row);
+		}
 
-    const controls = document.createElement("div");
-    controls.className = "d-flex justify-content-between";
+		table.appendChild(tbody);
+		container.appendChild(table);
 
-    const clearBtn = document.createElement("button");
-    clearBtn.className = "btn btn-outline-secondary btn-sm";
-    clearBtn.textContent = "Vider le panier";
-    clearBtn.addEventListener("click", () => Cart.clear());
+		const totalP = document.createElement("p");
+		totalP.className = "text-end fw-bold";
+		totalP.textContent = `Total : ${total} €`;
+		container.appendChild(totalP);
 
-    const orderLink = document.createElement("a");
-    orderLink.href = "/orders/new";
-    orderLink.className = "btn btn-primary";
-    orderLink.textContent = "Passer la commande";
+		const controls = document.createElement("div");
+		controls.className = "d-flex justify-content-between";
 
-    controls.appendChild(clearBtn);
-    controls.appendChild(orderLink);
+		const clearBtn = document.createElement("button");
+		clearBtn.className = "btn btn-outline-secondary btn-sm";
+		clearBtn.textContent = "Vider le panier";
+		clearBtn.addEventListener("click", () => Cart.clear());
 
-    container.appendChild(controls);
-  }
+		const orderLink = document.createElement("a");
+		orderLink.href = "/orders/new";
+		orderLink.className = "btn btn-primary";
+		orderLink.textContent = "Passer la commande";
+
+		controls.appendChild(clearBtn);
+		controls.appendChild(orderLink);
+
+		container.appendChild(controls);
+	}
+}
+
+function showStockAlert(plantName, stock) {
+	const alert = document.createElement("div");
+	alert.className =
+		"alert alert-warning fade position-absolute top-0 start-50 translate-middle-x mt-3 shadow";
+	alert.role = "alert";
+	alert.style.zIndex = "1055";
+	alert.style.maxWidth = "600px";
+	alert.style.pointerEvents = "none";
+	const message = document.createTextNode(
+		"Stock insuffisant pour pour cette plante ("
+	);
+	const strong = document.createElement("strong");
+	strong.textContent = plantName;
+	const message2 = document.createTextNode(
+		`), actuellement, il en reste ${stock}.`
+	);
+	alert.appendChild(message);
+	alert.appendChild(strong);
+	alert.appendChild(message2);
+	document.body.appendChild(alert);
+	setTimeout(() => alert.classList.add("show"), 10);
+	setTimeout(() => {
+		alert.classList.remove("show");
+		alert.classList.add("fade");
+		setTimeout(() => alert.remove(), 300);
+	}, 3000);
 }
 
 // Appel au chargement de la page
 document.addEventListener("DOMContentLoaded", function () {
-  Cart.renderOrderReview();
-  Cart.updateNavbarCount();
-  Cart.render();
+	Cart.renderOrderReview();
+	Cart.updateNavbarCount();
+	Cart.render();
 });
