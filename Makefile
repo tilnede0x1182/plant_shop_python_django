@@ -23,7 +23,7 @@ db-migrate:
 db-drop:
 	rm -f db.sqlite3
 
-db-seed:
+seed:
 	clear && $(MANAGE) seed
 
 db-reset:
