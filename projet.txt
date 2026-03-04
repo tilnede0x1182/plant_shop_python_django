@@ -354,274 +354,258 @@ application = get_wsgi_application()
 
 # plant_shop/static/css/app.css
 
-/* ===========================
-   🎨 Variables globales
-   =========================== */
-	 :root {
-		--elec-blue: #0066ff;
-		--fun-green: #00c851;
-		--fun-orange: #ff6d00;
-		--fun-yellow: #ffdd00;
-	}
+/* =======================================
+   🌐 Variables globales (couleurs thème)
+   ======================================= */
+:root {
+	--elec-blue: #0066ff;
+	--fun-green: #00c851;
+	--fun-orange: #ff6d00;
+	--fun-yellow: #ffdd00;
+}
 
-	/* ===========================
-		 🧩 Composants UI : Cards
-		 =========================== */
-	.card-fun {
-		position: relative;
-		background: rgba(0, 102, 255, 0.05);
-		border: 1px solid var(--elec-blue);
-		border-radius: 1rem 1rem 0 1rem;
-		padding: 1rem;
-	}
-	.card-fun::after {
-		content: "";
-		position: absolute;
-		right: -10px;
-		top: -10px;
-		border-width: 0 0 40px 40px;
-		border-style: solid;
-		border-color: transparent transparent var(--fun-orange) transparent;
-		opacity: 0.75;
-	}
 
-	/* ===========================
-		 ✅ Boutons custom
-		 =========================== */
-	.btn-green {
-		background: var(--fun-green);
-		color: #fff;
-	}
-	.btn-orange {
-		background: var(--fun-orange);
-		color: #fff;
-	}
+/* ================================
+   🎛️ Composants UI : Boutons
+   ================================ */
+.btn-green {
+	background: var(--fun-green);
+	color: #fff;
+}
 
-	/* ===========================
-		 🧱 Grille
-		 =========================== */
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: 1rem;
-	}
 
-	/* ===========================
-		 🧭 Navbar
-		 =========================== */
-	.navbar {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		background: var(--elec-blue);
-		padding: 1rem;
-		border-radius: 0;
-	}
+/* ================================
+   🧭 Composants UI : Navbar
+   ================================ */
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: var(--elec-blue);
+	padding: 1rem;
+	border-radius: 0;
+}
 
-	.navbar-left,
-	.navbar-right {
-		display: flex;
-		align-items: center;
-	}
+.navbar-left,
+.navbar-right {
+	display: flex;
+	align-items: center;
+}
 
-	.navbar-right a {
-		margin-left: 1rem;
-		color: white;
-		text-decoration: none;
-		font-weight: normal;
-	}
+.navbar-right {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+}
 
-	.navbar .navbar-brand,
-	.navbar .user-info {
-		color: white;
-		font-weight: normal;
-	}
+.navbar-right a {
+	margin-left: 1rem;
+	color: white;
+	text-decoration: none;
+	font-weight: normal;
+}
 
-	.navbar .nav-link {
-		color: #e0e0e0;
-		font-weight: normal;
-		text-decoration: none;
-	}
+.navbar .navbar-brand,
+.navbar .user-info {
+	color: white;
+	font-weight: normal;
+}
 
-	.navbar .nav-link:hover {
-		text-decoration: none;
-	}
+.navbar .nav-link {
+	color: #e0e0e0;
+	font-weight: normal;
+	text-decoration: none;
+}
 
-	.navbar-left .shop-logo {
-		font-weight: bold;
-		font-size: 1.2rem;
-		color: white;
-		text-decoration: none;
-	}
+.navbar .nav-link:hover {
+	text-decoration: none;
+}
 
-	.navbar-right {
-		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-	}
+.navbar-left .shop-logo {
+	font-weight: bold;
+	font-size: 1.2rem;
+	color: white;
+	text-decoration: none;
+}
 
-	.navbar a {
-		color: white;
-		text-decoration: none;
-		font-weight: normal;
-	}
+.navbar a {
+	color: white;
+	text-decoration: none;
+	font-weight: normal;
+}
 
-	.navbar a:hover {
-		text-decoration: none;
-		opacity: 0.85;
-	}
+.navbar a:hover {
+	text-decoration: none;
+	opacity: 0.85;
+}
 
-	.navbar .shop-link:hover {
-		opacity: 1;
-		text-decoration: none;
-	}
+.navbar .shop-link:hover {
+	opacity: 1;
+	text-decoration: none;
+}
 
-	.navbar.custom-navbar {
-		background-color: #28862b;
-	}
+.navbar.custom-navbar {
+	background-color: #28862b;
+}
 
-	/* ===========================
-		 ⬇️ Dropdown
-		 =========================== */
-	.dropdown {
-		position: relative;
-	}
 
-	.dropdown-menu {
-		display: none;
-		position: absolute;
-		right: 0;
-		background: white;
-		padding: 0.5rem;
-		border: 1px solid var(--elec-blue);
-		border-radius: 0.5rem;
-		box-shadow: 0 0 10px rgba(0,0,0,0.1);
-		z-index: 1000;
-	}
+/* ================================
+   🔽 Composants UI : Dropdown
+   ================================ */
+.dropdown {
+	position: relative;
+}
 
-	.dropdown-menu a {
-		display: block;
-		color: var(--elec-blue);
-		text-decoration: none;
-		padding: 0.25rem 0;
-	}
+.dropdown-menu {
+	display: none;
+	position: absolute;
+	right: 0;
+	background: white;
+	padding: 0.5rem;
+	border: 1px solid var(--elec-blue);
+	border-radius: 0.5rem;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+}
 
-	.dropdown-menu.show {
-		display: block;
-	}
+.dropdown-menu a {
+	display: block;
+	color: var(--elec-blue);
+	text-decoration: none;
+	padding: 0.25rem 0;
+}
+
+.dropdown-menu.show {
+	display: block;
+}
 
 # plant_shop/static/js/app.js
 
-/**
- * Classe représentant un panier client.
- */
+// # Classe Cart
+
 class Cart {
+	// ## Fonctions de persistance
+
 	/**
-	 * Récupère le panier depuis le localStorage.
-	 * @returns {Object} Panier
+	 * Récupère l'état du panier depuis le localStorage.
+	 * Gère les erreurs de parsing JSON.
+	 * @returns {Object} Objet représentant le panier
 	 */
 	static get() {
 		try {
-			return JSON.parse(localStorage.getItem("cart") || "{}");
-		} catch (e) {
+			const rawCart = localStorage.getItem("cart") || "{}";
+			return JSON.parse(rawCart);
+		} catch (jsonException) {
 			return {};
 		}
 	}
 
 	/**
-	 * Sauvegarde le panier dans le localStorage.
-	 * @param {Object} cart Panier à sauvegarder
+	 * Enregistre l'état du panier dans le localStorage.
+	 * @param {Object} currentCart Objet contenant les articles du panier
 	 */
-	static save(cart) {
-		localStorage.setItem("cart", JSON.stringify(cart));
+	static save(currentCart) {
+		localStorage.setItem("cart", JSON.stringify(currentCart));
 	}
 
 	/**
-	 * Enregistre l'état du panier et met à jour l'affichage du compteur dans la navbar.
-	 *
-	 * @param {Object} cart - Objet représentant le contenu actuel du panier.
+	 * Sauvegarde l'état et met à jour la barre de navigation.
+	 * @param {Object} currentCart Objet représentant le panier
 	 */
-	static #commitCart(cart) {
-		this.save(cart);
+	static #commit(currentCart) {
+		this.save(currentCart);
 		this.updateNavbarCount();
 	}
 
 	// ## Fonctions de modification
 
 	/**
-	 * Ajoute un article dans le panier ou incrémente sa quantité.
-	 * @param {number} id Identifiant produit
-	 * @param {string} name Nom produit
-	 * @param {number} price Prix unitaire
-	 * @param {number} stock Quantité maximale disponible
+	 * Ajoute un produit dans le panier ou incrémente sa quantité.
+	 * Affiche une alerte si le stock est dépassé.
+	 * @param {number} productId Identifiant du produit
+	 * @param {string} productName Nom du produit
+	 * @param {number} unitPrice Prix unitaire du produit
+	 * @param {number} maxStock Quantité maximale autorisée
 	 */
-	static add(id, name, price, stock) {
-		const cart = this.get();
-		if (!cart[id]) {
-			cart[id] = { id, name, price, quantity: 0, stock };
+	static add(productId, productName, unitPrice, maxStock) {
+		const currentCart = this.get();
+		if (!currentCart[productId]) {
+			currentCart[productId] = {
+				id: productId,
+				name: productName,
+				price: unitPrice,
+				quantity: 0,
+				stock: maxStock,
+			};
 		}
-		if (cart[id].quantity >= stock) {
-			showStockAlert(name, stock);
+		const item = currentCart[productId];
+		if (item.quantity >= item.stock) {
+			showStockAlert(productName, maxStock);
 			setTimeout(() => {
-				cart[id].quantity = stock;
-				Cart.#commitCart(cart);
+				item.quantity = maxStock;
+				Cart.#commit(currentCart);
 			}, 300);
 		} else {
-			cart[id].quantity++;
-			Cart.#commitCart(cart);
+			item.quantity++;
+			Cart.#commit(currentCart);
 		}
 	}
 
 	/**
 	 * Met à jour la quantité d’un article.
-	 * @param {number} id Identifiant de l’article
-	 * @param {number} value Quantité saisie
+	 * Force les bornes entre 1 et stock maximum.
+	 * @param {number} productId Identifiant du produit
+	 * @param {number} newValue Nouvelle quantité saisie
 	 */
-	static update(id, value) {
-		let qty = parseInt(value);
-		if (isNaN(qty)) return;
+	static update(productId, newValue) {
+		let quantity = parseInt(newValue);
+		if (isNaN(quantity)) return;
 
-		const cart = this.get();
-		if (!cart[id]) return;
+		const currentCart = this.get();
+		if (!currentCart[productId]) return;
 
-		const input = document.querySelector(`input[data-cart-id='${id}']`);
-		const stock = parseInt(input.dataset.stock || "1");
+		const inputField = document.querySelector(
+			`input[data-cart-id='${productId}']`
+		);
+		const stockLimit = parseInt(inputField.dataset.stock || "1");
 
-		if (qty < 1) qty = 1;
-		if (qty > stock) qty = stock;
+		if (quantity < 1) quantity = 1;
+		if (quantity > stockLimit) quantity = stockLimit;
 
-		cart[id].quantity = qty;
-		input.value = qty;
-		this.save(cart);
+		currentCart[productId].quantity = quantity;
+		inputField.value = quantity;
+		this.save(currentCart);
 		this.render();
 		this.updateNavbarCount();
 	}
 
 	/**
-	 * Met à jour avec un délai pour éviter le blocage de la saisie.
-	 * @param {number} id Identifiant article
-	 * @param {HTMLInputElement} input Champ input de quantité
+	 * Déclenche une mise à jour différée (300ms).
+	 * Empêche la surcharge par saisie rapide.
+	 * @param {number} productId Identifiant du produit
+	 * @param {HTMLInputElement} inputField Champ input concerné
 	 */
-	static delayedUpdate(id, input) {
-		clearTimeout(input._cartTimer);
-		input._cartTimer = setTimeout(() => {
-			Cart.update(id, input.value);
+	static delayedUpdate(productId, inputField) {
+		clearTimeout(inputField._cartTimer);
+		inputField._cartTimer = setTimeout(() => {
+			Cart.update(productId, inputField.value);
 		}, 300);
 	}
 
 	/**
 	 * Supprime un article du panier.
-	 * @param {number} id Identifiant de l’article
+	 * @param {number} productId Identifiant de l’article à supprimer
 	 */
-	static remove(id) {
-		const cart = this.get();
-		delete cart[id];
-		this.save(cart);
+	static remove(productId) {
+		const currentCart = this.get();
+		delete currentCart[productId];
+		this.save(currentCart);
 		this.render();
 	}
 
 	/**
-	 * Vide entièrement le panier.
+	 * Vide totalement le panier.
+	 * Supprime la clé "cart" du localStorage.
 	 */
 	static clear() {
 		localStorage.removeItem("cart");
@@ -629,237 +613,281 @@ class Cart {
 		this.updateNavbarCount();
 	}
 
+	// ## Fonctions d'affichage
+
 	/**
-	 * Met à jour le compteur du panier dans la barre de navigation.
+	 * Met à jour l'affichage du compteur de panier dans la navbar.
+	 * Calcule la somme des quantités.
 	 */
 	static updateNavbarCount() {
-		const cart = this.get();
-		let count = 0;
-		for (const id in cart) {
-			count += cart[id].quantity;
+		const currentCart = this.get();
+		let totalCount = 0;
+		for (const productId in currentCart) {
+			totalCount += currentCart[productId].quantity;
 		}
-		const link = document.getElementById("cart-link");
-		if (link) {
-			link.textContent = "Mon Panier" + (count > 0 ? ` (${count})` : "");
+		const cartLink = document.getElementById("cart-link");
+		if (cartLink) {
+			cartLink.textContent =
+				"Mon Panier" + (totalCount > 0 ? ` (${totalCount})` : "");
 		}
 	}
 
 	/**
-	 * Affiche le résumé de commande.
-	 * @param {string} containerId ID du conteneur
-	 * @param {string} inputId ID du champ caché de données
+	 * Affiche le résumé de commande dans le conteneur cible.
+	 * Génère aussi un input caché avec le détail des articles.
+	 * @param {string} containerId ID du conteneur d'affichage
+	 * @param {string} inputId ID du champ caché
 	 */
 	static renderOrderReview(
 		containerId = "order-review-container",
 		inputId = "order-items-input"
 	) {
 		const container = document.getElementById(containerId);
-		const input = document.getElementById(inputId);
-		const cart = this.get();
-		let total = 0;
-
-		if (!container || !input) return;
+		const hiddenInput = document.getElementById(inputId);
+		const currentCart = this.get();
+		if (!container || !hiddenInput) return;
 
 		container.innerHTML = "";
-
-		if (Object.keys(cart).length === 0) {
-			const msg = document.createElement("p");
-			msg.className = "alert alert-warning";
-			msg.textContent = "Votre panier est vide.";
-			container.appendChild(msg);
-			input.value = "";
+		if (Object.keys(currentCart).length === 0) {
+			Cart.#displayEmptyMessage(container, "Votre panier est vide.");
+			hiddenInput.value = "";
 			return;
 		}
 
-		const table = document.createElement("table");
-		table.className = "table shadow";
+		const { tableElement, totalAmount, orderItems } =
+			Cart.#buildOrderReviewTable(currentCart);
+		container.appendChild(tableElement);
 
-		const thead = document.createElement("thead");
-		thead.className = "table-dark";
-		const headerRow = document.createElement("tr");
-		["Plante", "Quantité", "Total"].forEach((text) => {
-			const th = document.createElement("th");
-			th.textContent = text;
-			headerRow.appendChild(th);
-		});
-		thead.appendChild(headerRow);
-		table.appendChild(thead);
+		const totalParagraph = document.createElement("p");
+		totalParagraph.className = "text-end fw-bold";
+		totalParagraph.textContent = `Total : ${totalAmount} €`;
+		container.appendChild(totalParagraph);
 
-		const tbody = document.createElement("tbody");
-		const items = [];
-
-		for (const id in cart) {
-			const item = cart[id];
-			const subtotal = item.quantity * item.price;
-			total += subtotal;
-
-			const row = document.createElement("tr");
-
-			const td1 = document.createElement("td");
-			const link = document.createElement("a");
-			link.href = `/plants/${item.id}`;
-			link.className = "cart-plant-link confirmed";
-			link.textContent = item.name;
-			td1.appendChild(link);
-
-			const td2 = document.createElement("td");
-			td2.textContent = item.quantity;
-
-			const td3 = document.createElement("td");
-			td3.textContent = `${subtotal} €`;
-
-			row.appendChild(td1);
-			row.appendChild(td2);
-			row.appendChild(td3);
-			tbody.appendChild(row);
-
-			items.push({ plant_id: parseInt(id), quantity: item.quantity });
-		}
-
-		table.appendChild(tbody);
-		container.appendChild(table);
-
-		const totalP = document.createElement("p");
-		totalP.className = "text-end fw-bold";
-		totalP.textContent = `Total : ${total} €`;
-		container.appendChild(totalP);
-
-		input.value = JSON.stringify(items);
+		hiddenInput.value = JSON.stringify(orderItems);
 	}
 
 	/**
-	 * Affiche le contenu du panier dans l’interface.
+	 * Affiche l'état du panier avec les boutons d'action.
+	 * Recharge le DOM associé au panier.
 	 */
 	static render() {
 		const container = document.getElementById("cart-container");
 		if (!container) return;
 
-		const cart = this.get();
+		const currentCart = this.get();
 		container.innerHTML = "";
-		let total = 0;
-
-		if (Object.keys(cart).length === 0) {
-			const msg = document.createElement("p");
-			msg.className = "alert alert-info";
-			msg.textContent = "Votre panier est vide.";
-			container.appendChild(msg);
+		if (Object.keys(currentCart).length === 0) {
+			Cart.#displayEmptyMessage(container, "Votre panier est vide.");
 			return;
 		}
 
-		const table = document.createElement("table");
-		table.className = "table";
+		const { tableElement, totalAmount } = Cart.#buildCartTable(currentCart);
+		container.appendChild(tableElement);
 
+		const totalParagraph = document.createElement("p");
+		totalParagraph.className = "text-end fw-bold";
+		totalParagraph.textContent = `Total : ${totalAmount} €`;
+		container.appendChild(totalParagraph);
+
+		const controlGroup = Cart.#buildControls();
+		container.appendChild(controlGroup);
+	}
+
+	// ## Fonctions internes privées
+
+	/**
+	 * Affiche un message si le panier est vide.
+	 * @param {HTMLElement} container Conteneur d'affichage
+	 * @param {string} messageText Texte à afficher
+	 */
+	static #displayEmptyMessage(container, messageText) {
+		const message = document.createElement("p");
+		message.className = "alert alert-info";
+		message.textContent = messageText;
+		container.appendChild(message);
+	}
+
+	/**
+	 * Construit un tableau HTML pour l’aperçu de commande.
+	 * @param {Object} currentCart Panier actuel
+	 * @returns {Object} Table, total et liste de commande
+	 */
+	static #buildOrderReviewTable(currentCart) {
+		let totalAmount = 0;
+		const tableElement = document.createElement("table");
+		tableElement.className = "table shadow";
+
+		const headerRow = ["Plante", "Quantité", "Total"];
 		const thead = document.createElement("thead");
-		thead.className = "table-dark";
-		const headerRow = document.createElement("tr");
-		["Plante", "Quantité", "Action"].forEach((text) => {
+		thead.className = "table-light";
+		const trHead = document.createElement("tr");
+		headerRow.forEach((text) => {
 			const th = document.createElement("th");
 			th.textContent = text;
-			headerRow.appendChild(th);
+			trHead.appendChild(th);
 		});
-		thead.appendChild(headerRow);
-		table.appendChild(thead);
+		thead.appendChild(trHead);
+		tableElement.appendChild(thead);
+
+		const tbody = document.createElement("tbody");
+		const orderItems = [];
+
+		for (const productId in currentCart) {
+			const item = currentCart[productId];
+			const subtotal = item.quantity * item.price;
+			totalAmount += subtotal;
+
+			const tr = document.createElement("tr");
+			tr.innerHTML = `
+				<td><a href="/plants/${item.id}" class="cart-plant-link confirmed">${item.name}</a></td>
+				<td>${item.quantity}</td>
+				<td>${subtotal} €</td>
+			`;
+			tbody.appendChild(tr);
+			orderItems.push({
+				plant_id: parseInt(productId),
+				quantity: item.quantity,
+			});
+		}
+
+		tableElement.appendChild(tbody);
+		return { tableElement, totalAmount, orderItems };
+	}
+
+	/**
+	 * Construit le tableau du panier pour l'affichage principal.
+	 * @param {Object} currentCart
+	 * @returns {Object} Table HTML + total
+	 */
+	static #buildCartTable(currentCart) {
+		let totalAmount = 0;
+		const tableElement = document.createElement("table");
+		tableElement.className = "table";
+
+		const headerRow = ["Plante", "Quantité", "Action"];
+		const thead = document.createElement("thead");
+		thead.className = "table-light";
+		const trHead = document.createElement("tr");
+		headerRow.forEach((text) => {
+			const th = document.createElement("th");
+			th.textContent = text;
+			trHead.appendChild(th);
+		});
+		thead.appendChild(trHead);
+		tableElement.appendChild(thead);
 
 		const tbody = document.createElement("tbody");
 
-		for (const id in cart) {
-			const item = cart[id];
-			total += item.price * item.quantity;
+		for (const productId in currentCart) {
+			const item = currentCart[productId];
+			totalAmount += item.price * item.quantity;
 
-			const row = document.createElement("tr");
-
-			const td1 = document.createElement("td");
-			const link = document.createElement("a");
-			link.href = `/plants/${id}`;
-			link.className = "text-decoration-none";
-			link.textContent = item.name;
-			td1.appendChild(link);
-
-			const td2 = document.createElement("td");
-			const input = document.createElement("input");
-			input.type = "number";
-			input.min = "1";
-			input.className = "form-control form-control-sm";
-			input.style.maxWidth = "70px";
-			input.value = item.quantity;
-			input.dataset.cartId = id;
-			input.dataset.stock = item.stock;
-			input.addEventListener("input", () =>
-				Cart.delayedUpdate(id, input)
+			const inputField = document.createElement("input");
+			inputField.type = "number";
+			inputField.min = "1";
+			inputField.className = "form-control form-control-sm";
+			inputField.style.maxWidth = "70px";
+			inputField.value = item.quantity;
+			inputField.dataset.cartId = productId;
+			inputField.dataset.stock = item.stock;
+			inputField.addEventListener("input", () =>
+				Cart.delayedUpdate(productId, inputField)
 			);
-			input.addEventListener("blur", () => Cart.update(id, input.value));
-			td2.appendChild(input);
+			inputField.addEventListener("blur", () =>
+				Cart.update(productId, inputField.value)
+			);
 
-			const td3 = document.createElement("td");
-			const btn = document.createElement("button");
-			btn.className = "btn btn-danger btn-sm";
-			btn.textContent = "Retirer";
-			btn.addEventListener("click", () => Cart.remove(id));
-			td3.appendChild(btn);
+			const removeBtn = document.createElement("button");
+			removeBtn.className = "btn btn-danger btn-sm";
+			removeBtn.textContent = "Retirer";
+			removeBtn.addEventListener("click", () => {
+				Cart.remove(productId);
+        this.updateNavbarCount();
+			});
 
-			row.appendChild(td1);
-			row.appendChild(td2);
-			row.appendChild(td3);
-			tbody.appendChild(row);
+			const tr = document.createElement("tr");
+			tr.innerHTML = `
+				<td><a href="/plants/${productId}" class="text-decoration-none">${item.name}</a></td>
+			`;
+			const tdInput = document.createElement("td");
+			tdInput.appendChild(inputField);
+			const tdButton = document.createElement("td");
+			tdButton.appendChild(removeBtn);
+
+			tr.appendChild(tdInput);
+			tr.appendChild(tdButton);
+			tbody.appendChild(tr);
 		}
 
-		table.appendChild(tbody);
-		container.appendChild(table);
+		tableElement.appendChild(tbody);
+		return { tableElement, totalAmount };
+	}
 
-		const totalP = document.createElement("p");
-		totalP.className = "text-end fw-bold";
-		totalP.textContent = `Total : ${total} €`;
-		container.appendChild(totalP);
-
-		const controls = document.createElement("div");
-		controls.className = "d-flex justify-content-between";
+	/**
+	 * Construit les boutons de contrôle sous le panier.
+	 * @returns {HTMLElement} Groupe de boutons
+	 */
+	static #buildControls() {
+		const controlsDiv = document.createElement("div");
+		controlsDiv.className = "d-flex justify-content-between";
 
 		const clearBtn = document.createElement("button");
 		clearBtn.className = "btn btn-outline-secondary btn-sm";
 		clearBtn.textContent = "Vider le panier";
 		clearBtn.addEventListener("click", () => Cart.clear());
 
-		const orderLink = document.createElement("a");
-		orderLink.href = "/orders/new";
-		orderLink.className = "btn btn-primary";
-		orderLink.textContent = "Passer la commande";
+		const orderBtn = document.createElement("a");
+		orderBtn.href = "/orders/new";
+		orderBtn.className = "btn btn-primary";
+		orderBtn.textContent = "Passer la commande";
 
-		controls.appendChild(clearBtn);
-		controls.appendChild(orderLink);
+		controlsDiv.appendChild(clearBtn);
+		controlsDiv.appendChild(orderBtn);
 
-		container.appendChild(controls);
+		return controlsDiv;
 	}
 }
 
-function showStockAlert(plantName, stock) {
-	const alert = document.createElement("div");
-	alert.className =
+// # Fonctions utilitaires
+
+/**
+ * Affiche une alerte de stock insuffisant.
+ * @param {string} plantName Nom de la plante
+ * @param {number} stockLeft Quantité restante
+ */
+function showStockAlert(plantName, stockLeft) {
+	const alertBox = document.createElement("div");
+	alertBox.className =
 		"alert alert-warning fade position-absolute top-0 start-50 translate-middle-x mt-3 shadow";
-	alert.role = "alert";
-	alert.style.zIndex = "1055";
-	alert.style.maxWidth = "600px";
-	alert.style.pointerEvents = "none";
-	const message = document.createTextNode(
-		"Stock insuffisant pour pour cette plante ("
+	alertBox.role = "alert";
+	alertBox.style.zIndex = "1055";
+	alertBox.style.maxWidth = "600px";
+	alertBox.style.pointerEvents = "none";
+
+	alertBox.appendChild(
+		document.createTextNode("Stock insuffisant pour pour cette plante (")
 	);
-	const strong = document.createElement("strong");
-	strong.textContent = plantName;
-	const message2 = document.createTextNode(
-		`), actuellement, il en reste ${stock}.`
+	const strongText = document.createElement("strong");
+	strongText.textContent = plantName;
+	alertBox.appendChild(strongText);
+	alertBox.appendChild(
+		document.createTextNode(`), actuellement, il en reste ${stockLeft}.`)
 	);
-	alert.appendChild(message);
-	alert.appendChild(strong);
-	alert.appendChild(message2);
-	document.body.appendChild(alert);
-	setTimeout(() => alert.classList.add("show"), 10);
+
+	document.body.appendChild(alertBox);
+	setTimeout(() => alertBox.classList.add("show"), 10);
 	setTimeout(() => {
-		alert.classList.remove("show");
-		alert.classList.add("fade");
-		setTimeout(() => alert.remove(), 300);
+		alertBox.classList.remove("show");
+		alertBox.classList.add("fade");
+		setTimeout(() => alertBox.remove(), 300);
 	}, 3000);
 }
 
-// Appel au chargement de la page
+// # Lancement du programme
+
+/**
+ * Initialise l’affichage du panier au chargement.
+ */
 document.addEventListener("DOMContentLoaded", function () {
 	Cart.renderOrderReview();
 	Cart.updateNavbarCount();
@@ -1538,26 +1566,26 @@ admin3@plantshop.com password
 
 Utilisateurs normaux
 
-toussaintjosette@example.org password
-noemi20@example.net password
-uvincent@example.net password
-pierreanne@example.com password
-gabriellemenard@example.com password
-andrejeannine@example.org password
-guichardstephanie@example.net password
-gabriel21@example.org password
-qleconte@example.net password
-toussaintantoine@example.org password
-gilbertalexandria@example.org password
-sjacob@example.com password
-jjacob@example.net password
-aubryjosephine@example.net password
-marechalodette@example.org password
-jeanadelaide@example.org password
-bernarddiallo@example.org password
-kguilbert@example.org password
-verdiercorinne@example.net password
-zblot@example.net password
+celine64@example.com password
+hjourdan@example.org password
+bmarques@example.org password
+udupuis@example.net password
+jeanne48@example.net password
+adelattre@example.net password
+slegros@example.net password
+jeannine16@example.net password
+aubertnathalie@example.net password
+jbruneau@example.com password
+thibaultchauveau@example.net password
+julie62@example.org password
+ylegrand@example.net password
+maggie43@example.com password
+nicolas12@example.com password
+nathdupre@example.net password
+tmace@example.com password
+alix07@example.org password
+xjean@example.com password
+lambertjacqueline@example.com password
 
 
 # ===== STRUCTURE DU PROJET =====
