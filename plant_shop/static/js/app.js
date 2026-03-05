@@ -369,8 +369,8 @@ class Cart {
 
 /**
  * Affiche une alerte de stock insuffisant.
- * @param {string} plantName Nom de la plante
- * @param {number} stockLeft Quantité restante
+ * @param plantName string Nom de la plante
+ * @param stockLeft number Quantité restante
  */
 function showStockAlert(plantName, stockLeft) {
 	const alertBox = document.createElement("div");
